@@ -15,6 +15,8 @@ return new class extends Migration
     {
         Schema::create('detail_menus', function (Blueprint $table) {
             $table->id();
+            $table->foreignId("menu_id")->constrained();
+            $table->foreignId("product_id")->constrained();
             $table->timestamps();
         });
     }
