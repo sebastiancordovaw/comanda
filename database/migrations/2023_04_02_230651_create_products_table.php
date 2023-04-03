@@ -21,7 +21,7 @@ return new class extends Migration
             $table->string('measure',255);
             $table->double('quantityUnitMeasure', 8, 2);
             $table->double('stock', 8, 2);
-            $table->boolean('state');
+            $table->boolean('status');
             $table->timestamps();
         });
     }

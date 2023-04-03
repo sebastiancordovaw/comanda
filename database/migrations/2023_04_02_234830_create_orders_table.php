@@ -16,9 +16,9 @@ return new class extends Migration
         Schema::create('orders', function (Blueprint $table) {
             $table->id();
             $table->date('date');
-            $table->boolean('state');
+            $table->boolean('status');
             $table->integer('discount');
-            $table->double('amount', 8, 2);
+            $table->double('total_amount', 8, 2);
             $table->text('description');
             $table->foreignId('table_id')->constrained();
             $table->foreignId('user_id')->constrained();
