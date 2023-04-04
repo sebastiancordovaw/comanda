@@ -23,7 +23,7 @@
                     </a>
                 </template>
             </Dropdown>
-            <pre class="text-left">{{$store.state.cart1 }}</pre>
+            
             
             
         </div>
