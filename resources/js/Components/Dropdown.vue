@@ -1,5 +1,6 @@
 <script setup>
 import { computed, onMounted, onUnmounted, ref } from 'vue';
+import { useStore } from 'vuex';
 
 const props = defineProps({
     align: {
@@ -30,6 +31,7 @@ onUnmounted(() => document.removeEventListener('keydown', closeOnEscape));
 const widthClass = computed(() => {
     return {
         '48': 'w-48',
+        '100%': 'w-full',
     }[props.width.toString()];
 });
 
@@ -70,7 +72,7 @@ const alignmentClasses = computed(() => {
                 style="display: none;"
                 @click="open = false"
             >
-                <div class="rounded-md ring-1 ring-black ring-opacity-5" :class="contentClasses">
+                <div v-show = "$store.state.productsSearch.length" class="ring-transparent border-orange-400  rounded-sm ring-1 border-t border-b border-r border-l border-gray-300 ring-opacity-5 p-0" :class="contentClasses">
                     <slot name="content" />
                 </div>
             </div>
