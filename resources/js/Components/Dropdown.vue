@@ -72,7 +72,7 @@ const alignmentClasses = computed(() => {
                 style="display: none;"
                 @click="open = false"
             >
-                <div v-show = "$store.state.productsSearch.length" class="ring-transparent border-orange-400  rounded-sm ring-1 border-t border-b border-r border-l border-gray-300 ring-opacity-5 p-0" :class="contentClasses">
+                <div v-show = "$store.state.productsSearch.length" class="bg-white ring-transparent border-orange-400  rounded-sm ring-1 border-t border-b border-r border-l border-gray-300 ring-opacity-5 p-0" :class="contentClasses">
                     <slot name="content" />
                 </div>
             </div>

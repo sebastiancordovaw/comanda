@@ -1,14 +1,14 @@
 import {createStore} from 'vuex';
 import axios from 'axios';
 
+
 const store = createStore({
 
     state:{
         productsSearch  : [],
         tableActivate   : 0, 
         tables          : [],
-        cart1           : [],
-        cart2           : []
+        cart1           : {}
 
     },
     mutations:{
@@ -25,7 +25,6 @@ const store = createStore({
             else{
                 state.productsSearch = []
             }
-            
         },
         setActiveTable(state, payload)
         {
@@ -33,8 +32,15 @@ const store = createStore({
         },
         setCart1(state,payload){
             state.cart1[state.tableActivate][payload.id] = payload;
-            console.log(state.cart1);
         },
+        async confirCart1Commit(state)
+        {
+  
+            await axios.post('/set-order-detail',state.cart1[state.tableActivate])
+            .then(response=>{
+               
+            });
+        }
 
     },
     actions:{
@@ -86,18 +92,23 @@ const store = createStore({
            
             if(state.cart1[state.tableActivate].hasOwnProperty(products.id))
             {
-                product = {'id':products.id,'name':products.name,'price':products.price,'count':state.cart1[state.tableActivate][products.id].count};
+                product = {'id':products.id,'name':products.name,'price':products.price,'count':state.cart1[state.tableActivate][products.id].count,'total_amount':null };
                 state.cart1[state.tableActivate][products.id] = product;
                 state.cart1[state.tableActivate][products.id].count++;
+                state.cart1[state.tableActivate][products.id].total_amount= state.cart1[state.tableActivate][products.id].price * state.cart1[state.tableActivate][products.id].count
             }
             else
             {
-                product = {'id':products.id,'name':products.name,'price':products.price,'count':1};
+                product = {'id':products.id,'name':products.name,'price':products.price,'count':1,"total_amount":products.price};
                 state.cart1[state.tableActivate][products.id] = product;
             }
 
             commit('setCart1', state.cart1[state.tableActivate][products.id]);
-        }
+        },
+        confirmCart1Action({commit,state})
+        {
+            commit('confirCart1Commit');
+        },
     },
     getters:{
 

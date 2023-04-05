@@ -1,12 +1,6 @@
 <template>
-    <div class="grid grid-cols-12 gap-4" style="height:100vh">
+    <div style="height:100vh">
 
-        <div class="col-span-2">
-            <button class="w-full p-1 rounded-md bg-orange-500 mr-4 hover:bg-orange-400  border-t border-b border-l border-r border-orange-700 text-white text-2xl">+</button>
-        </div>
-
-        <div class="col-span-10">
-    
             <Dropdown align="down" width="100%" :contentClasses="['py-0']">
                 <template #trigger>
                     <div class="relative mx-auto text-gray-600">
@@ -22,20 +16,23 @@
                         </div>
                     </a>
                 </template>
+
+                
             </Dropdown>
             
             
-            
+            <cart1></cart1>
             
         </div>
 
-    </div>
+  
     
     
 </template>
 
 <script>
 import Dropdown from '@/Components/Dropdown.vue';
+import Cart1 from '@/Custom/Cart1.vue';
 import { useStore } from 'vuex';
 
 export default {
@@ -59,13 +56,8 @@ export default {
         return { searchProduct, addCart1 }
     }
     ,components:{
-        Dropdown
+        Dropdown,
+        Cart1
     }
 }
 </script>
-
-<style>
-#app {
-  text-align: center;
-}
-</style>
