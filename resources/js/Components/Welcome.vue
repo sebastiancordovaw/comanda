@@ -31,6 +31,7 @@ export default {
         const selectTable = table =>{
             
             store.dispatch('setActive', table);
+            store.dispatch('getOrder');
         }
         return {selectTable}
     }

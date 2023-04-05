@@ -8,7 +8,8 @@ const store = createStore({
         productsSearch  : [],
         tableActivate   : 0, 
         tables          : [],
-        cart1           : {}
+        cart1           : {},
+        products        : [] 
 
     },
     mutations:{
@@ -35,13 +36,24 @@ const store = createStore({
         },
         async confirCart1Commit(state)
         {
-  
-            await axios.post('/set-order-detail',state.cart1[state.tableActivate])
+            await axios.post('/set-order-detail',{key:state.tableActivate, cart:state.cart1[state.tableActivate]},{
+                headers: {
+                'Content-Type': 'application/json'
+                }
+              })
             .then(response=>{
-               
+               console.log(response);
+               state.products = response.data;
+               delete state.cart1[state.tableActivate]
+            });
+        },
+        async getOrderCommit(state)
+        {
+            await axios.post('/get-order-detail',{table:state.tableActivate})
+            .then(response=>{
+               state.products = response.data;
             });
         }
-
     },
     actions:{
         async getProducts ({commit,state},search){
@@ -109,6 +121,9 @@ const store = createStore({
         {
             commit('confirCart1Commit');
         },
+        getOrder({commit,state}){
+            commit('getOrderCommit')
+        }
     },
     getters:{
 

@@ -4,6 +4,7 @@ use Illuminate\Foundation\Application;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\ProductController;
 use App\Http\Controllers\TableController;
+use App\Http\Controllers\OrderController;
 use Inertia\Inertia;
 
 /*
@@ -32,4 +33,7 @@ Route::middleware([
 
     Route::post('/get-products', [ProductController::class,'getProducts'])->name('get-products');
     Route::post('/get-tables', [TableController::class,'getTables'])->name('get-tables');
+    Route::post('/set-order-detail', [OrderController::class,'setOrderDetail'])->name('set-order-detail');
+    Route::post('/get-order-detail', [OrderController::class,'getOrderDetail'])->name('get-order-detail');
+
 });

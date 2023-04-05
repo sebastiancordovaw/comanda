@@ -34,6 +34,7 @@
 import Dropdown from '@/Components/Dropdown.vue';
 import Cart1 from '@/Custom/Cart1.vue';
 import { useStore } from 'vuex';
+import { onMounted } from 'vue';
 
 export default {
     data(){
@@ -53,6 +54,11 @@ export default {
         const addCart1 = product =>{
             store.dispatch('addCart1Action',product);
         }
+
+        onMounted(() => {
+            store.dispatch('getOrder');
+        })
+
         return { searchProduct, addCart1 }
     }
     ,components:{

@@ -26,12 +26,15 @@
         <button @click = "cancelCart1" class="p-1 rounded-sm bg-gray-200 hover:bg-gray-300 mr-4 p-2  border-t border-b border-l border-r border-gray-700 text-gray-800 ">Cancelar</button>
         <button @click = "confirmCart1" class="p-1 rounded-sm bg-orange-200 hover:bg-orange-300 mr-4 p-2  border-t border-b border-l border-r border-orange-700 text-orange-800 ">Confirmar</button>
     </div>
+
+    <detail-order></detail-order>
     
 
 
 </template>
 <script>
 import { useStore } from 'vuex';
+import DetailOrder from '@/Custom/DetailOrder.vue';
 export default {
     data()
     {
@@ -86,6 +89,9 @@ export default {
             }
             
         }
+  },
+  components:{
+    DetailOrder
   }
 }
 </script>
