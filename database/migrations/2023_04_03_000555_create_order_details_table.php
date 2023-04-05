@@ -19,7 +19,8 @@ return new class extends Migration
             $table->foreignId('product_id')->constrained();
             $table->integer('count');
             $table->double('amount', 8, 2);
-            $table->text('note');
+            $table->text('note')->nullable();
+            $table->boolean('status')->default(1);
             $table->timestamps();
         });
     }

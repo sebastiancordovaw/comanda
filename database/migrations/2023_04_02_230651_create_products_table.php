@@ -16,11 +16,11 @@ return new class extends Migration
         Schema::create('products', function (Blueprint $table) {
             $table->id();
             $table->string('name',255);
-            $table->text('description',255);
+            $table->text('description',255)->nullable();
             $table->double('price', 8, 2);
-            $table->string('measure',255);
-            $table->double('quantityUnitMeasure', 8, 2);
-            $table->double('stock', 8, 2);
+            $table->string('measure',255)->nullable();
+            $table->double('quantityUnitMeasure', 8, 2)->nullable();
+            $table->double('stock', 8, 2)->nullable();
             $table->boolean('status');
             $table->timestamps();
         });

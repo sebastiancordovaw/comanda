@@ -9,7 +9,8 @@ const store = createStore({
         tableActivate   : 0, 
         tables          : [],
         cart1           : {},
-        products        : [] 
+        products        : [], 
+        total_amount_order: 0
 
     },
     mutations:{
@@ -51,9 +52,20 @@ const store = createStore({
         {
             await axios.post('/get-order-detail',{table:state.tableActivate})
             .then(response=>{
-               state.products = response.data;
+                state.products = response.data;
+                let total = 0;
+                for(let i= 0; i< state.products.length; i++)
+                {
+                    total += state.products[i].amount;
+                }
+                state.total_amount_order = total;
+
             });
-        }
+        },
+        async deleteProductOrderCommit(state,payload){
+            console.log(payload);
+            
+    }
     },
     actions:{
         async getProducts ({commit,state},search){
@@ -123,6 +135,10 @@ const store = createStore({
         },
         getOrder({commit,state}){
             commit('getOrderCommit')
+        },
+        deleteProductOrder({commit,state},product)
+        {
+            commit('deleteProductOrderCommit',product);
         }
     },
     getters:{
