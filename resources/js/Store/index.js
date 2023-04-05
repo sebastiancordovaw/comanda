@@ -31,11 +31,11 @@ const store = createStore({
         setActiveTable(state, payload)
         {
             state.tableActivate = payload.id; 
+            localStorage.setItem("table", state.tableActivate);
         },
         setCart1(state,payload){
             state.cart1[state.tableActivate][payload.id] = payload;
             localStorage.setItem("cart1",  JSON.stringify(state.cart1));
-            localStorage.setItem("table", state.tableActivate);
         },
         async confirCart1Commit(state)
         {
@@ -47,13 +47,13 @@ const store = createStore({
             .then(response=>{
                state.products = response.data;
                delete state.cart1[state.tableActivate]
+               localStorage.setItem("cart1",  JSON.stringify(state.cart1));
             });
         },
         async getOrderCommit(state)
         {
             await axios.post('/get-order-detail',{table:state.tableActivate})
             .then(response=>{
-                
                 state.products = response.data;
             });
         },

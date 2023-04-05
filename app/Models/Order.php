@@ -36,6 +36,7 @@ class Order extends Model
         $total_amount = 0;
 
         foreach ($request["cart"] as $valor) {
+
             $total_amount += intval($valor["total_amount"]);
         }
 
@@ -87,6 +88,12 @@ class Order extends Model
         $orderDetail = OrderDetail::find($id);
         $orderDetail->status = 0;
         $orderDetail->save();
+
+        $order = (new static)::find($orderDetail->order_id);
+        $order->total_amount -= $orderDetail->amount;
+        $order->save();
+
+
     }
 
 
