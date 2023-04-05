@@ -35,5 +35,6 @@ Route::middleware([
     Route::post('/get-tables', [TableController::class,'getTables'])->name('get-tables');
     Route::post('/set-order-detail', [OrderController::class,'setOrderDetail'])->name('set-order-detail');
     Route::post('/get-order-detail', [OrderController::class,'getOrderDetail'])->name('get-order-detail');
+    Route::post('/delete-order-table', [OrderController::class,'deleteOrderTable'])->name('delete-order-table');
 
 });

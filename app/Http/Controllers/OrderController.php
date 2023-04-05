@@ -36,6 +36,10 @@ class OrderController extends Controller
     }
 
     public function getOrderDetail(Request $id){
-         return $this->order->getDetail($id["table"],"orders.table_id");
+        return $this->order->getDetail($id["table"],"orders.table_id");
+    }
+
+    public function deleteOrderTable(Request $order_detail){
+        return $this->order->deleteOrder($order_detail['order_detail']);
     }
 }

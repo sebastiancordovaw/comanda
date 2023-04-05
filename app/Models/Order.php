@@ -50,7 +50,6 @@ class Order extends Model
                 "status"=>1,
                 "discount"=>0,
                 "total_amount"=>$total_amount,
-                "description"=>"sdsddf",
                 "table_id"=>$request["key"],
                 "user_id"=>Auth::id(),
             ]);
@@ -60,7 +59,7 @@ class Order extends Model
             $order = (new static)::find($find->id);
 
             $order->total_amount += $total_amount;
-             
+    
             $order->save();
         }
         
@@ -70,7 +69,7 @@ class Order extends Model
 
     public function getDetail($id,$from = "order_id"){
 
-        return OrderDetail::select('order_details.id','order_details.order_id','order_details.count','order_details.amount','products.name','order_details.product_id','orders.table_id')
+        return OrderDetail::select('order_details.id','order_details.status','order_details.order_id','order_details.count','order_details.amount','products.name','order_details.product_id','orders.table_id')
         ->where($from,$id) 
         ->leftJoin('orders', function($join) 
         {
@@ -81,6 +80,13 @@ class Order extends Model
             $join->on('order_details.product_id', '=', 'products.id');
         })
         ->get();
+    }
+
+    public static function deleteOrder($id)
+    {
+        $orderDetail = OrderDetail::find($id);
+        $orderDetail->status = 0;
+        $orderDetail->save();
     }
 
 

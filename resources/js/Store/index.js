@@ -43,7 +43,6 @@ const store = createStore({
                 }
               })
             .then(response=>{
-               console.log(response);
                state.products = response.data;
                delete state.cart1[state.tableActivate]
             });
@@ -53,19 +52,14 @@ const store = createStore({
             await axios.post('/get-order-detail',{table:state.tableActivate})
             .then(response=>{
                 state.products = response.data;
-                let total = 0;
-                for(let i= 0; i< state.products.length; i++)
-                {
-                    total += state.products[i].amount;
-                }
-                state.total_amount_order = total;
-
             });
         },
         async deleteProductOrderCommit(state,payload){
-            console.log(payload);
-            
-    }
+            await axios.post('/delete-order-table',{order_detail:payload.id})
+            .then(response=>{
+                store.commit('getOrderCommit');
+            });
+        }
     },
     actions:{
         async getProducts ({commit,state},search){
