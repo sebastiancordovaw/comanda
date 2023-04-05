@@ -34,6 +34,8 @@ const store = createStore({
         },
         setCart1(state,payload){
             state.cart1[state.tableActivate][payload.id] = payload;
+            localStorage.setItem("cart1",  JSON.stringify(state.cart1));
+            localStorage.setItem("table", state.tableActivate);
         },
         async confirCart1Commit(state)
         {
@@ -51,6 +53,7 @@ const store = createStore({
         {
             await axios.post('/get-order-detail',{table:state.tableActivate})
             .then(response=>{
+                
                 state.products = response.data;
             });
         },

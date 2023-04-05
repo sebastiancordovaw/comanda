@@ -49,12 +49,15 @@ export default {
     
             store.state.cart1[store.state.tableActivate][product.id].count++;
             store.state.cart1[store.state.tableActivate][product.id].total_amount = store.state.cart1[store.state.tableActivate][product.id].count * store.state.cart1[store.state.tableActivate][product.id].price
+            localStorage.setItem("cart1",  JSON.stringify(store.state.cart1));
         }
         const decrease = product => {
             if(store.state.cart1[store.state.tableActivate][product.id].count>=2)
             {
                 store.state.cart1[store.state.tableActivate][product.id].count--;
                 store.state.cart1[store.state.tableActivate][product.id].total_amount = store.state.cart1[store.state.tableActivate][product.id].count * store.state.cart1[store.state.tableActivate][product.id].price
+
+                localStorage.setItem("cart1",  JSON.stringify(store.state.cart1));
             }
 
         }

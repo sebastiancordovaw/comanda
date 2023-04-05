@@ -35,6 +35,7 @@ import Dropdown from '@/Components/Dropdown.vue';
 import Cart1 from '@/Custom/Cart1.vue';
 import { useStore } from 'vuex';
 import { onMounted } from 'vue';
+import{onBeforeMount} from 'vue';
 
 export default {
     data(){
@@ -57,6 +58,11 @@ export default {
 
         onMounted(() => {
             store.dispatch('getOrder');
+        })
+
+        onBeforeMount(() => {
+            store.state.cart1 = JSON.parse(localStorage.getItem("cart1"));
+            store.state.tableActivate = localStorage.getItem("table");
         })
 
         return { searchProduct, addCart1 }

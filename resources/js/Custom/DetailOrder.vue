@@ -1,6 +1,6 @@
 <template>
     <div v-show="$store.state.products.length">
-        <div class="grid grid-cols-12 bg-gray-400 hover:bg-orange-300 border-orange-700 mt-1 border-l-4" v-for="(product) in $store.state.products" :key  = "product.id" :id="product.id" :class ="product.status?'':'delete'">
+        <div class="grid grid-cols-12 bg-gray-100 hover:bg-orange-300 border-orange-700 mt-1 border-l-4" v-for="(product) in $store.state.products" :key  = "product.id" :id="product.id" :class ="product.status?'':'delete'">
         <div class="col-span-2 p-2">{{ product.count }}</div>
         <div class="col-span-5 p-2"><b>{{ product.name }}</b></div>
         <div class="col-span-3 text-center p-2">${{ product.amount }}</div>
