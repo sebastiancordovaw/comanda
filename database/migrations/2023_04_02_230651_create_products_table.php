@@ -21,7 +21,7 @@ return new class extends Migration
             $table->string('measure',255)->nullable();
             $table->double('quantityUnitMeasure', 8, 2)->nullable();
             $table->double('stock', 8, 2)->nullable();
-            $table->boolean('status');
+            $table->boolean('status')->default(1);
             $table->timestamps();
         });
     }
