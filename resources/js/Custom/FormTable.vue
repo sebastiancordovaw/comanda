@@ -4,7 +4,7 @@
             <Dropdown align="down" width="100%" :contentClasses="['py-0']">
                 <template #trigger>
                     <div class="relative mx-auto text-gray-600">
-                        <input v-model="searchInput" type="text" @keyup="searchProduct(searchInput)" name="" id="" class="focus:ring-transparent w-full border-t border-b border-l border-r border-gray-400 focus:border-orange-700">
+                        <input  v-show="$store.state.tableActivate>0" v-model="searchInput" type="text" @keyup="searchProduct(searchInput)" name="" id="" class="focus:ring-transparent w-full border-t border-b border-l border-r border-gray-400 focus:border-orange-700">
                     </div>
                 </template>
 
@@ -61,8 +61,16 @@ export default {
         })
 
         onBeforeMount(() => {
-            store.state.cart1 = JSON.parse(localStorage.getItem("cart1"));
-            store.state.tableActivate = localStorage.getItem("table");
+            if(localStorage.getItem("cart1")!=null)
+            {
+                store.state.cart1 = JSON.parse(localStorage.getItem("cart1"));
+            }
+            
+            if(localStorage.getItem("table")!=null)
+            {
+                store.state.tableActivate = localStorage.getItem("table");
+            }
+            
         })
 
         return { searchProduct, addCart1 }

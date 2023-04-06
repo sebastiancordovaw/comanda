@@ -31,7 +31,7 @@ class OrderDetail extends Model
                 "product_id"=>$valor['id'],
                 "count"=>$valor['count'],
                 "amount"=>$valor['total_amount'],
-                "note"=>"wer",
+                "note"=>(isset($valor['note']))?$valor['note']:null,
             ]);
         }
     }

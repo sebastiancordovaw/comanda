@@ -21,6 +21,8 @@
     "dependencies": {
         "install": "^0.13.0",
         "npm": "^9.6.3",
+        "sweetalert2": "^11.7.3",
+        "vue-sweetalert2": "^5.0.5",
         "vuex": "^4.0.2"
     }
 }

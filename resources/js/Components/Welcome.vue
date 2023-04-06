@@ -43,8 +43,12 @@ export default {
         }
         onUpdated(()=>{
 
-            document.getElementById("table_"+localStorage.getItem("table")).classList.add("bg-yellow-500","border-yellow-600");
-            document.getElementById("table_"+localStorage.getItem("table")).classList.remove("bg-green-500", "hover:bg-green-400");
+            if(document.getElementById("table_"+localStorage.getItem("table"))!=null)
+            {
+                document.getElementById("table_"+localStorage.getItem("table")).classList.add("bg-yellow-500","border-yellow-600");
+                document.getElementById("table_"+localStorage.getItem("table")).classList.remove("bg-green-500", "hover:bg-green-400");
+            }
+            
         })
         
 

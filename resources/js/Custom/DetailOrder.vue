@@ -2,7 +2,7 @@
     <div v-show="$store.state.products.length">
         <div class="grid grid-cols-12 bg-gray-100 hover:bg-orange-300 border-orange-700 mt-1 border-l-4" v-for="(product) in $store.state.products" :key  = "product.id" :id="product.id" :class ="product.status?'':'delete'">
         <div class="col-span-2 p-2">{{ product.count }}</div>
-        <div class="col-span-5 p-2"><b>{{ product.name }}</b></div>
+        <div class="col-span-5 p-2"><b>{{ product.name }}</b><p><small class="text-sm">{{ product.note }}</small></p></div>
         <div class="col-span-3 text-center p-2">${{ product.amount }}</div>
         <div class="col-span-2 p-2">
             <svg v-if="product.status>0" :id="'trash_'+product.id"  @click="delProduct(product)" xmlns="http://www.w3.org/2000/svg" style="margin:0 auto; position: relative; cursor: pointer;" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class=" w-5 h-5 text-center text-orange-400 hover:text-orange-600">
@@ -15,6 +15,7 @@
 
 <script>
 import { useStore } from 'vuex';
+import Swal from 'sweetalert2';
 export default {
     
     data(){
@@ -26,7 +27,19 @@ export default {
         const store = useStore();
 
         const delProduct = product => {
-            store.dispatch('deleteProductOrder', product);
+            Swal.fire({
+                        title: 'Seguro de eliminar?',
+                        text: "¡Esta acción no se puede revertir!",
+                        icon: 'info',
+                        showCancelButton: true,
+                        confirmButtonColor: '#3085d6',
+                        cancelButtonColor: '#d33',
+                        confirmButtonText: 'Si, Eliminar'
+                        }).then((result) => {
+                        if (result.isConfirmed) {
+                            store.dispatch('deleteProductOrder', product); 
+                        }
+            })
         }
         return {delProduct}
     },

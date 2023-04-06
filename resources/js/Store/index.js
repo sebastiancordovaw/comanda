@@ -50,6 +50,12 @@ const store = createStore({
                localStorage.setItem("cart1",  JSON.stringify(state.cart1));
             });
         },
+        commentCommit(state,payload){
+            console.log(payload.comment);
+            state.cart1[state.tableActivate][payload.payload.id].note = payload.comment;
+            localStorage.setItem("cart1",  JSON.stringify(state.cart1));
+
+        },
         async getOrderCommit(state)
         {
             await axios.post('/get-order-detail',{table:state.tableActivate})
@@ -105,7 +111,7 @@ const store = createStore({
         },
         addCart1Action({commit,state},products){
             let product = {};
-            
+
             if(state.cart1[state.tableActivate] === undefined)
             {
                 state.cart1[state.tableActivate] = new Object();
@@ -113,14 +119,14 @@ const store = createStore({
            
             if(state.cart1[state.tableActivate].hasOwnProperty(products.id))
             {
-                product = {'id':products.id,'name':products.name,'price':products.price,'count':state.cart1[state.tableActivate][products.id].count,'total_amount':null };
+                product = {'id':products.id,'name':products.name,'price':products.price,'count':state.cart1[state.tableActivate][products.id].count,"note":state.cart1[state.tableActivate][products.id].note,'total_amount':null };
                 state.cart1[state.tableActivate][products.id] = product;
                 state.cart1[state.tableActivate][products.id].count++;
                 state.cart1[state.tableActivate][products.id].total_amount= state.cart1[state.tableActivate][products.id].price * state.cart1[state.tableActivate][products.id].count
             }
             else
             {
-                product = {'id':products.id,'name':products.name,'price':products.price,'count':1,"total_amount":products.price};
+                product = {'id':products.id,'name':products.name,'price':products.price,'count':1,"note":products.note,"total_amount":products.price};
                 state.cart1[state.tableActivate][products.id] = product;
             }
 
@@ -136,7 +142,12 @@ const store = createStore({
         deleteProductOrder({commit,state},product)
         {
             commit('deleteProductOrderCommit',product);
+        },
+        commentAction({commit,state},data)
+        {
+            commit('commentCommit',{payload:data.product,comment:data.comment});
         }
+        
     },
     getters:{
 
