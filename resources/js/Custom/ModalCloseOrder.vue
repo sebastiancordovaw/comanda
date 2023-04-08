@@ -13,17 +13,23 @@
                 </div>
             </template>  
 
-            <div class="grid grid-cols-12 border-l-2 border-gray-400" style="margin: 2px 0 0 0;">
-                <div class="col-span-2 text-left p-2">Subtotal </div>
-                <div class="col-span-10 text-right py-2 px-6">$ {{ $store.state.total_amount_order }}</div>
+            <div class="grid grid-cols-12 border-l-2 border-green-600" style="margin: 2px 0 0 0;">
+                <div class="col-span-2 text-left p-2"><b class="text-green-600">Subtotal </b></div>
+                <div class="col-span-10 text-right py-2 px-6"><b class="text-green-600">$ {{ $store.state.total_amount_order }}</b></div>
             </div>
+
+            <div v-if="$store.state.discount_active>0" class="grid grid-cols-12 border-l-2 border-red-600" style="margin: 2px 0 0 0;">
+                <div class="col-span-3 text-left p-2"><b class="text-red-600">Descuento <span v-if="$store.state.percentage_active>0">{{ $store.state.percentage_active+' %' }}</span></b> </div>
+                <div class="col-span-9 text-right py-2 px-6"><b class="text-red-600">$ - {{ $store.state.discount_active }}</b></div>
+            </div>
+
             <div class="grid grid-cols-12 border-l-2 border-gray-400" style="margin: 2px 0 0 0;">
                 <div class="col-span-2 text-left p-2">Propina 10% </div>
                 <div class="col-span-10 text-right py-2 px-6 ">$<input v-model.number="$store.state.tip" class="w-20 focus:ring-transparent" type="text"></div>
             </div>
             <div class="grid grid-cols-12 bg-gray-600 text-white" style="margin: 5px 0 0 0;">
                 <div class="col-span-2 text-left p-2">Total </div>
-                <div class="col-span-10 text-right py-2 px-6"><b>$ {{ $store.state.total_amount_order+$store.state.tip }}</b></div>
+                <div class="col-span-10 text-right py-2 px-6"><b>$ {{ ($store.state.total_amount_order+$store.state.tip)-$store.state.discount_active }}</b></div>
             </div>
             <!--<div class="col-span-6"></div>-->
             

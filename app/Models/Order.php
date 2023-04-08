@@ -60,7 +60,10 @@ class Order extends Model
             $order = (new static)::find($find->id);
 
             $order->total_amount += $total_amount;
-    
+            if($order->percentage > 0){
+                $order->discount = ($order->total_amount*$order->percentage)/100;
+            }
+            
             $order->save();
         }
         
@@ -98,6 +101,11 @@ class Order extends Model
 
         $order = (new static)::find($orderDetail->order_id);
         $order->total_amount -= $orderDetail->amount;
+
+        if($order->percentage > 0){
+            $order->discount = ($order->total_amount*$order->percentage)/100;
+        }
+        
         $order->save();
 
     }
@@ -109,7 +117,16 @@ class Order extends Model
         $order->percentage=$data['porcentage'];
         $order->save();
     }
-    
+
+    public static function deleteDiscount($id)
+    {
+  
+       $order = (new static)::where("table_id",$id)->first();
+        $order->discount=0;
+        $order->percentage=0;
+        $order->save();
+    }
+     
 
 
 

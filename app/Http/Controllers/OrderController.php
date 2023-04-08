@@ -53,4 +53,12 @@ class OrderController extends Controller
     public function applyDiscount(Request $data){
         return $this->order->applyDiscount($data);
     }
+
+    public function getDiscount(Request $id){
+        return $this->order->getDiscount($id["table"]);
+    }
+
+    public function deleteDiscount(Request $id){
+        return $this->order->deleteDiscount($id["table"]);
+    }
 }
