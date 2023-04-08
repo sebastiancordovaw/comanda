@@ -5,6 +5,7 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use App\Models\OrderDetail;
+use App\Models\Table;
 use Carbon\Carbon;
 use Illuminate\Support\Facades\Auth;
 
@@ -127,7 +128,9 @@ class Order extends Model
     public static function deleteDiscount($id)
     {
   
-       $order = (new static)::where("table_id",$id)->first();
+       $order = (new static)::where("table_id",$id)
+       ->where("status",1)
+       ->first();
         $order->discount=0;
         $order->percentage=0;
         $order->save();
@@ -142,6 +145,19 @@ class Order extends Model
         $order->tip=$data['tip'];
         $order->status=0;
         $order->save();
+
+    }
+
+    public function changeTable($data){
+    
+        $order = (new static)::where("table_id",$data["oldTable"])
+        ->where("status",1)
+        ->first();
+        $order->table_id=$data["newTable"];
+        $order->save();
+        $table = Table::where('id',$data["newTable"])->first();
+        
+        return $table->number;
 
     }
      

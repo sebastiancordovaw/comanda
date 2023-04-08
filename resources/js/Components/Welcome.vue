@@ -6,6 +6,7 @@
             <button v-show = "$store.state.tables.length"  v-for="(table, i ) in $store.state.tables" :key="i"  :class="table.status == 1 ?'open':''"  :id="'table_'+table.id"   @click = "selectTable(table)" class="w-24 h-24 float-left text-center bg-green-500 hover:bg-green-400 rounded-md mr-4 text-3xl text-white border-2 border-green-700 tables">{{table.number}}</button>
         </div>
         <div class="col-span-2">
+            <change-table></change-table>
             <form-table></form-table>
         </div>
     </div>
@@ -13,6 +14,7 @@
 
 <script>
 import FormTable from '@/Custom/FormTable.vue';
+import ChangeTable from '@/Custom/ChangeTable.vue';
 import { onMounted, onUpdated } from 'vue'
 import { useStore } from 'vuex';
 export default {
@@ -58,7 +60,8 @@ export default {
     }
     ,
     components:{
-        FormTable
+        FormTable,
+        ChangeTable
     },
     methods:{
         

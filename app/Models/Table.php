@@ -39,4 +39,23 @@ class Table extends Model
         }
         
     }
+
+    public function changeTable($data){
+        $tableNew = (new static)::find($data["newTable"]);
+
+        if($tableNew->status==0)
+        {
+            $tableNew->status = 1;
+            $tableNew->save();
+
+            $tableOld = (new static)::find($data["oldTable"]);
+            if($tableOld->status==1)
+            {
+                $tableOld->status = 0;
+                $tableOld->save();
+            }
+            return true;
+        }
+        return false;
+    }
 }

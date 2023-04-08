@@ -146,6 +146,31 @@ const store = createStore({
                 state.tableActivate   = 0;
 
             });
+         },
+         async changeTableCommit(state,payload)
+         {
+            await axios.post('/change-table',{'newTable':payload.newTable,'oldTable':payload.oldTable})
+            .then(response=>{
+                if(response.data){
+
+                    state.tableActivate   = payload.newTable;
+                    state.tableActivateNumber   = response.data;
+                    localStorage.setItem("tableNumber", state.tableActivateNumber)
+                    for(let i = 0; i< state.tables.length; i++){
+                        if(payload.newTable ==  state.tables[i].id)
+                        {
+                            state.tables[i].status = 1
+                        }
+    
+                        if(payload.oldTable ==  state.tables[i].id)
+                        {
+                            state.tables[i].status = 0
+                        }
+                    }
+                    store.commit('getOrderCommit'); 
+                }
+                
+            });
          }
 
     },
@@ -239,6 +264,10 @@ const store = createStore({
         },
         closeOrderAction({commit,state}){
             commit('closeOrderCommit') 
+        },
+        changeTableAction({commit,state},tables)
+        {
+            commit('changeTableCommit',{'newTable':tables.newTable, 'oldTable':tables.oldTable}) 
         }
         
     },
