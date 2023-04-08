@@ -6,12 +6,16 @@ const store = createStore({
 
     state:{
         productsSearch  : [],
-        tableActivate   : 0, 
+        tableActivate   : 0,
+        tableActivateNumber : 0,
+        showDiscount        : false,
         tables          : [],
         cart1           : {},
         products        : [], 
-        total_amount_order: 0
-
+        total_amount_order: 0,
+        tip               :0,
+        discount          :0,
+        porcentage        :0,
     },
     mutations:{
         setTables(state, payload)
@@ -30,14 +34,16 @@ const store = createStore({
         },
         setActiveTable(state, payload)
         {
-            state.tableActivate = payload.id; 
+            state.tableActivate = payload.id;
+            state.tableActivateNumber = payload.number;
             localStorage.setItem("table", state.tableActivate);
+            localStorage.setItem("tableNumber", state.tableActivateNumber);
         },
         setCart1(state,payload){
             state.cart1[state.tableActivate][payload.id] = payload;
             localStorage.setItem("cart1",  JSON.stringify(state.cart1));
         },
-        async confirCart1Commit(state)
+        async confirmCart1Commit(state)
         {
             await axios.post('/set-order-detail',{key:state.tableActivate, cart:state.cart1[state.tableActivate]},{
                 headers: {
@@ -49,9 +55,15 @@ const store = createStore({
                delete state.cart1[state.tableActivate]
                localStorage.setItem("cart1",  JSON.stringify(state.cart1));
             });
+
+            for(let i = 0; i< state.tables.length; i++){
+                if(state.tableActivate ==  state.tables[i].id)
+                {
+                    state.tables[i].status = 1
+                }
+            }
         },
         commentCommit(state,payload){
-            console.log(payload.comment);
             state.cart1[state.tableActivate][payload.payload.id].note = payload.comment;
             localStorage.setItem("cart1",  JSON.stringify(state.cart1));
 
@@ -60,7 +72,9 @@ const store = createStore({
         {
             await axios.post('/get-order-detail',{table:state.tableActivate})
             .then(response=>{
-                state.products = response.data;
+                state.products = response.data.detail;
+                state.porcentage    =  response.data.discount.percentage;
+                state.discount      =  response.data.discount.discount;
             });
         },
         async deleteProductOrderCommit(state,payload){
@@ -68,7 +82,15 @@ const store = createStore({
             .then(response=>{
                 store.commit('getOrderCommit');
             });
+        },
+        async applyDiscountCommit(state){
+
+            await axios.post('/apply-discount',{'discount':state.discount,'porcentage':state.porcentage,'table':state.tableActivate})
+            .then(response=>{
+                store.commit('getOrderCommit');
+            });
         }
+
     },
     actions:{
         async getProducts ({commit,state},search){
@@ -134,7 +156,7 @@ const store = createStore({
         },
         confirmCart1Action({commit,state})
         {
-            commit('confirCart1Commit');
+            commit('confirmCart1Commit');
         },
         getOrder({commit,state}){
             commit('getOrderCommit')
@@ -146,6 +168,9 @@ const store = createStore({
         commentAction({commit,state},data)
         {
             commit('commentCommit',{payload:data.product,comment:data.comment});
+        },
+        applyDiscountAction({commit,state}){
+            commit('applyDiscountCommit')
         }
         
     },

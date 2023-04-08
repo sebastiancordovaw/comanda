@@ -1,6 +1,8 @@
 <template>
     <div style="height:100vh">
-
+            <div v-if="$store.state.tableActivateNumber>0" class="bg-red-500 text-white text-lg p-4">
+                <strong>MESA {{ $store.state.tableActivateNumber }}</strong>
+            </div>
             <Dropdown align="down" width="100%" :contentClasses="['py-0']">
                 <template #trigger>
                     <div class="relative mx-auto text-gray-600">
@@ -69,6 +71,11 @@ export default {
             if(localStorage.getItem("table")!=null)
             {
                 store.state.tableActivate = localStorage.getItem("table");
+            }
+
+            if(localStorage.getItem("tableNumber")!=null)
+            {
+                store.state.tableActivateNumber = localStorage.getItem("tableNumber");
             }
             
         })

@@ -87,6 +87,8 @@ export default {
                 },
                 showCancelButton: true,
                 confirmButtonText: 'Aceptar',
+                confirmButtonColor: '#3085d6',
+                cancelButtonColor: '#d33',
                 showLoaderOnConfirm: true,
                 preConfirm: (comment) => {
                     store.dispatch('commentAction',{product,comment});

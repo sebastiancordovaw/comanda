@@ -83,6 +83,13 @@ class Order extends Model
         ->get();
     }
 
+    public function getDiscount($id){
+
+        return (new static)::select('orders.percentage','orders.discount')
+        ->where('table_id',$id) 
+        ->first();
+    }
+
     public static function deleteOrder($id)
     {
         $orderDetail = OrderDetail::find($id);
@@ -93,8 +100,16 @@ class Order extends Model
         $order->total_amount -= $orderDetail->amount;
         $order->save();
 
-
     }
+
+    public static function applyDiscount($data)
+    {
+        $order = (new static)::where("table_id",$data['table'])->first();
+        $order->discount=$data['discount'];
+        $order->percentage=$data['porcentage'];
+        $order->save();
+    }
+    
 
 
 

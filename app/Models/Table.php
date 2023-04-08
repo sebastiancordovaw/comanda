@@ -17,4 +17,15 @@ class Table extends Model
     public function order(){
         return $this->hasMany(Order::class, 'table_id', 'id');
     }
+
+    public function openTable($id)
+    {
+        $table = (new static)::find($id);
+        if($table->status==0)
+        {
+            $table->status = 1;
+            $table->save();
+        }
+        
+    }
 }
