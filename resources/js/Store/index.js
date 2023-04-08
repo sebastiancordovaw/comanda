@@ -119,7 +119,34 @@ const store = createStore({
                 state.discount_active = 0;
                 store.commit('getOrderCommit');
             });
-        }
+        },
+        async closeOrderCommit(state){
+            await axios.post('/close-order',{'table':parseInt(state.tableActivate),'tip':state.tip})
+            .then(response=>{
+
+
+                for(let i = 0; i< state.tables.length; i++){
+                    if(state.tableActivate ==  state.tables[i].id)
+                    {
+                        state.tables[i].status = 0
+                    }
+                }
+
+                state.productsSearch  = [],
+                state.tableActivateNumber = 0,
+                state.showDiscount        = false;
+                delete state.cart1[state.tableActivate];
+                state.products        = []; 
+                state.total_amount_order = 0,
+                state.tip               =0;
+                state.discount          =0;
+                state.porcentage        =0;
+                state.discount_active   =0;
+                state.percentage_active =0;
+                state.tableActivate   = 0;
+
+            });
+         }
 
     },
     actions:{
@@ -209,6 +236,9 @@ const store = createStore({
         },
         deleteDiscountAction({commit,state}){
             commit('deleteDiscountCommit') 
+        },
+        closeOrderAction({commit,state}){
+            commit('closeOrderCommit') 
         }
         
     },

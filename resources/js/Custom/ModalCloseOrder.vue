@@ -60,7 +60,8 @@ export default {
         
 
         const closeOrderF = ()=>{
-            alert("asdsad");
+            emit('show');
+            store.dispatch("closeOrderAction")
         }
     
 

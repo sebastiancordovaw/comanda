@@ -75,6 +75,7 @@ class Order extends Model
 
         return OrderDetail::select('order_details.id','order_details.status','order_details.order_id','order_details.count','order_details.amount','order_details.note','products.name','order_details.product_id','orders.table_id')
         ->where($from,$id) 
+        ->where('orders.status',"=",1)
         ->leftJoin('orders', function($join) 
         {
             $join->on('order_details.order_id', '=', 'orders.id');
@@ -83,6 +84,7 @@ class Order extends Model
         {
             $join->on('order_details.product_id', '=', 'products.id');
         })
+       
         ->get();
     }
 
@@ -90,6 +92,7 @@ class Order extends Model
 
         return (new static)::select('orders.percentage','orders.discount')
         ->where('table_id',$id) 
+        ->where('status',1) 
         ->first();
     }
 
@@ -112,7 +115,10 @@ class Order extends Model
 
     public static function applyDiscount($data)
     {
-        $order = (new static)::where("table_id",$data['table'])->first();
+        $order = (new static)::
+        where("table_id",$data['table'])
+        ->where("status",1)
+        ->first();
         $order->discount=$data['discount'];
         $order->percentage=$data['porcentage'];
         $order->save();
@@ -125,6 +131,18 @@ class Order extends Model
         $order->discount=0;
         $order->percentage=0;
         $order->save();
+    }
+
+    public static function closeOrder($data){
+        
+        $order = (new static)::
+        where("table_id",$data['table'])
+        ->where("status",1)
+        ->first();
+        $order->tip=$data['tip'];
+        $order->status=0;
+        $order->save();
+
     }
      
 

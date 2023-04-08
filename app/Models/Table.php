@@ -28,4 +28,15 @@ class Table extends Model
         }
         
     }
+
+    public function closeTable($id)
+    {
+        $table = (new static)::find($id);
+        if($table->status==1)
+        {
+            $table->status = 0;
+            $table->save();
+        }
+        
+    }
 }

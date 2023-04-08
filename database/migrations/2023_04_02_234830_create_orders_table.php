@@ -20,6 +20,7 @@ return new class extends Migration
             $table->integer('percentage')->default(0);
             $table->integer('discount')->default(0);
             $table->double('total_amount', 8, 2);
+            $table->integer('tip')->default(0);
             $table->foreignId('table_id')->constrained();
             $table->foreignId('user_id')->constrained();
             $table->timestamps();

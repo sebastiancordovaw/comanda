@@ -39,6 +39,7 @@ Route::middleware([
     Route::post('/apply-discount', [OrderController::class,'applyDiscount'])->name('apply-discount');
     Route::post('/get-discount', [OrderController::class,'getDiscount'])->name('get-discount');
     Route::post('/delete-discount', [OrderController::class,'deleteDiscount'])->name('delete-discount');
+    Route::post('/close-order', [OrderController::class,'closeOrder'])->name('close-order');
     
 
 });

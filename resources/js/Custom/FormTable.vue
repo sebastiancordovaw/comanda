@@ -6,7 +6,7 @@
             <Dropdown align="down" width="100%" :contentClasses="['py-0']">
                 <template #trigger>
                     <div class="relative mx-auto text-gray-600">
-                        <input  v-show="$store.state.tableActivate>0" v-model="searchInput" type="text" @keyup="searchProduct(searchInput)" name="" id="" class="focus:ring-transparent w-full border-t border-b border-l border-r border-gray-400 focus:border-orange-700">
+                        <input  v-show="$store.state.tableActivate>0" v-model="searchInput" type="text" @change="clearInput()" @keyup="searchProduct()" name="" id="" class="focus:ring-transparent w-full border-t border-b border-l border-r border-gray-400 focus:border-orange-700">
                     </div>
                 </template>
 
@@ -36,13 +36,13 @@
 import Dropdown from '@/Components/Dropdown.vue';
 import Cart1 from '@/Custom/Cart1.vue';
 import { useStore } from 'vuex';
-import { onMounted } from 'vue';
+import { ref, onMounted } from 'vue';
 import{onBeforeMount} from 'vue';
 
+const searchInput = ref('');
 export default {
     data(){
         return{
-            searchInput: ""
         }
     },
     methods:{
@@ -50,12 +50,17 @@ export default {
     },setup()
     {
         const store = useStore();
-        const searchProduct = searchInput =>{
-            store.dispatch('getProducts',searchInput);
+        const searchProduct = () =>{
+            store.dispatch('getProducts',searchInput.value);
         }
 
-        const addCart1 = product =>{
+        const clearInput = () =>{
+            searchInput.value="";
+        }
+
+        const addCart1 = (product,input) =>{
             store.dispatch('addCart1Action',product);
+            
         }
 
         onMounted(() => {
@@ -80,7 +85,7 @@ export default {
             
         })
 
-        return { searchProduct, addCart1 }
+        return { searchProduct, addCart1, clearInput ,searchInput}
     }
     ,components:{
         Dropdown,

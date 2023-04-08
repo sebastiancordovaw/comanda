@@ -61,4 +61,9 @@ class OrderController extends Controller
     public function deleteDiscount(Request $id){
         return $this->order->deleteDiscount($id["table"]);
     }
+    public function closeOrder(Request $data){
+        $this->table->closeTable($data["table"]);
+        return $this->order->closeOrder($data);
+
+    }
 }
