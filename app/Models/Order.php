@@ -33,7 +33,8 @@ class Order extends Model
     }
 
     public static function createOrder($request)
-    {    
+    {   
+        
         $total_amount = 0;
 
         foreach ($request["cart"] as $valor) {
@@ -74,7 +75,7 @@ class Order extends Model
 
     public function getDetail($id,$from = "order_id"){
 
-        return OrderDetail::select('order_details.id','order_details.status','order_details.order_id','order_details.count','order_details.amount','order_details.note','products.name','order_details.product_id','orders.table_id')
+        return OrderDetail::select('order_details.id','order_details.status','order_details.order_id','order_details.count','order_details.amount','order_details.note','products.name','order_details.product_id','orders.table_id','order_details.date_pay', 'order_details.tip')
         ->where($from,$id) 
         ->where('orders.status',"=",1)
         ->leftJoin('orders', function($join) 
@@ -142,7 +143,12 @@ class Order extends Model
         where("table_id",$data['table'])
         ->where("status",1)
         ->first();
-        $order->tip=$data['tip'];
+
+        if(isset($data['tip']))
+        {
+            $order->tip=$data['tip'];
+        }
+        
         $order->status=0;
         $order->save();
 

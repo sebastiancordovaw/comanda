@@ -123,8 +123,6 @@ const store = createStore({
         async closeOrderCommit(state){
             await axios.post('/close-order',{'table':parseInt(state.tableActivate),'tip':state.tip})
             .then(response=>{
-
-
                 for(let i = 0; i< state.tables.length; i++){
                     if(state.tableActivate ==  state.tables[i].id)
                     {
@@ -144,7 +142,10 @@ const store = createStore({
                 state.discount_active   =0;
                 state.percentage_active =0;
                 state.tableActivate   = 0;
-
+                
+                localStorage.setItem("table",null);
+                localStorage.setItem("cart1",{});
+                localStorage.getItem("tableNumber",0);
             });
          },
          async changeTableCommit(state,payload)
@@ -171,7 +172,34 @@ const store = createStore({
                 }
                 
             });
-         }
+         },
+         async closeOrderCheckCommit(state,payload){
+          if(payload.products.length>0)
+          {
+        
+            await axios.post('/close-order-check',payload)
+            .then(response=>{
+                //state.products = response.data;
+            });
+        }
+            
+         },
+         async updaterProductsCommitCheckPay(state){
+            await axios.post('/get-order-detail',{table:state.tableActivate})
+            .then(response=>{
+               state.products = response.data.detail;
+            });
+
+         },
+         async closeOrderCheckFinallyCommit(state, payload)
+         {
+            await axios.post('/close-order',{'table':parseInt(state.tableActivate)})
+            .then(response=>{
+
+                
+               
+            });
+         } 
 
     },
     actions:{
@@ -268,6 +296,16 @@ const store = createStore({
         changeTableAction({commit,state},tables)
         {
             commit('changeTableCommit',{'newTable':tables.newTable, 'oldTable':tables.oldTable}) 
+        },
+        closeOrderCheckAction({commit,state},data){
+            commit('closeOrderCheckCommit',data) 
+        },
+        updaterProductsActionCheckPay({commit,state}){
+            commit('updaterProductsCommitCheckPay') 
+        },
+        closeOrderCheckFinallyAction({commit,state})
+        {
+            commit('closeOrderCheckFinallyCommit');
         }
         
     },

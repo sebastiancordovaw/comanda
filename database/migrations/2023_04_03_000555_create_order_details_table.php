@@ -21,6 +21,8 @@ return new class extends Migration
             $table->double('amount', 8, 2);
             $table->text('note')->nullable();
             $table->boolean('status')->default(1);
+            $table->double('tip', 8, 2)->default(0);
+            $table->timestamp('date_pay')->nullable();
             $table->timestamps();
         });
     }

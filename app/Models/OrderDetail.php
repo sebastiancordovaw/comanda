@@ -4,6 +4,7 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Support\Facades\DB;
 
 class OrderDetail extends Model
 {
@@ -34,6 +35,21 @@ class OrderDetail extends Model
                 "note"=>(isset($valor['note']))?$valor['note']:null,
             ]);
         }
+    }
+
+    public static function updateProductCheck($data,$tip)
+    {
+        
+       $current = DB::raw('CURRENT_TIMESTAMP');
+        foreach($data as $valor){
+
+            $orderDetail = OrderDetail::find(explode("_",$valor["id"])[2]);
+            $orderDetail->date_pay = $current;
+            $orderDetail->tip = $valor["tip"];
+            $orderDetail->save();
+
+        }
+        return true;
     }
 
 }

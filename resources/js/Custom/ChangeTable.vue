@@ -32,8 +32,6 @@ export default {
         if(selectMesa.value!="" && selectMesa.value!=null && selectMesa.value !=store.state.tableActivate)
         {
             store.dispatch("changeTableAction",{'newTable':selectMesa.value,'oldTable':store.state.tableActivate});
-
-            ////////////////////
             
             for(let i = 0; i<document.getElementsByClassName("tables").length; i++){
                 document.getElementsByClassName("tables")[i].classList.remove("selectTable")

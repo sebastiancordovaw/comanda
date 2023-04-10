@@ -66,4 +66,14 @@ class OrderController extends Controller
         return $this->order->closeOrder($data);
 
     }
+
+    public function CloseOrderCheck(Request $data){
+        
+        $this->orderDetail->updateProductCheck($data['products'],$data['tip']);
+        $detail =  $this->order->getDetail($data["table"],"orders.table_id");
+        return $detail;
+    }
+
+
+    //DB::raw('CURRENT_TIMESTAMP')
 }

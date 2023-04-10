@@ -68,7 +68,7 @@ export default {
         })
 
         onBeforeMount(() => {
-            if(localStorage.getItem("cart1")!=null)
+            if(localStorage.getItem("cart1")!='[object Object]' && localStorage.getItem("cart1")!=null)
             {
                 store.state.cart1 = JSON.parse(localStorage.getItem("cart1"));
             }
