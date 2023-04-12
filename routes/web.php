@@ -34,11 +34,14 @@ Route::middleware([
     Route::post('/get-products', [ProductController::class,'getProducts'])->name('get-products');
     Route::post('/get-tables', [TableController::class,'getTables'])->name('get-tables');
     Route::post('/set-order-detail', [OrderController::class,'setOrderDetail'])->name('set-order-detail');
+    Route::post('/get-order', [OrderController::class,'getOrder'])->name('get-order');
     Route::post('/get-order-detail', [OrderController::class,'getOrderDetail'])->name('get-order-detail');
     Route::post('/delete-order-table', [OrderController::class,'deleteOrderTable'])->name('delete-order-table');
     Route::post('/apply-discount', [OrderController::class,'applyDiscount'])->name('apply-discount');
-    Route::post('/get-discount', [OrderController::class,'getDiscount'])->name('get-discount');
-    Route::post('/delete-discount', [OrderController::class,'deleteDiscount'])->name('delete-discount');
+    Route::post('/delete-discount-permanent', [OrderController::class,'deleteDiscountPermanent'])->name('delete-discount-permanent');
+    Route::post('/delete-discount-percentage', [OrderController::class,'deleteDiscountPercentage'])->name('delete-discount-percentage');
+    Route::post('/delete-discount-product', [OrderController::class,'deleteDiscountProduct'])->name('delete-discount-product');
+    Route::post('/add-discount-product', [OrderController::class,'addDiscountProduct'])->name('add-discount-product');
     Route::post('/close-order', [OrderController::class,'closeOrder'])->name('close-order');
     Route::post('/change-table', [TableController::class,'changeTable'])->name('change-table');
     Route::post('/close-order-check', [OrderController::class,'CloseOrderCheck'])->name('close-order-check');

@@ -16,6 +16,7 @@
                             <div class="col-span-2 text-right py-2 px-6"><input @click="totalCheck" type="checkbox" :class="(product.date_pay!=null)?'paid':''" :id="'check_pay_'+product.id" :tip="(product.date_pay!=null)?product.tip:(tipcheck/isCheck)" :checked="(product.date_pay!=null)?true:false" :disabled="(product.date_pay!=null)?true:false" :value="product.amount" :ref="(product.date_pay!=null)?'':'newCheckPay'" :name="product.id" ></div>
                         </div>
                     </template> 
+                    
                     <div class="grid grid-cols-12 border-l-2 border-green-600" style="margin: 2px 0 0 0;">
                         <div class="col-span-2 text-left p-2"><b class="text-green-600">Subtotal </b></div>
                         <div class="col-span-10 text-right py-2 px-6"><b class="text-green-600">$ {{  subtotal }}</b></div>
@@ -64,68 +65,27 @@ import { useStore } from 'vuex';
 
 let closemodalcloseOrder = null;
 let idsCheck = [];
-let tip =ref(0);
 let paid = ref(0);
 let tipParcial = ref(0);
 let finishCheck = ref(false);
 export default {
     emits:['show','paycheck'],
     setup(props,{emit}){
+
+        
         const store = useStore();
-        closemodalcloseOrder = ()=>{
-            emit('paycheck');
+        closemodalcloseOrder = ()=>
+        { 
+            emit('paycheck'); 
         }
         
         const closeOrderF = ()=>{
 
-                store.dispatch("closeOrderCheckAction",{'products':idsCheck,"table":store.state.tableActivate}).then(() => {
-                  store.dispatch("updaterProductsActionCheckPay").then(() => {
-                    
-                        for(let i = 0;i< idsCheck.length; i++ ){
-                        
-                        document.getElementById('row_'+idsCheck[i]["id"]).classList.add("pay");
-                        document.getElementById(idsCheck[i]["id"]).classList.add("paid")
-                        document.getElementById(idsCheck[i]["id"]).disabled = true;
-
-                    }
-                    
-                    paid.value = 0;
-                    tipParcial.value = 0;
-                    
-                    for(let i = 0; i<document.getElementsByClassName("paid").length ;i++)
-                    {
-                        tipParcial.value  = tipParcial.value +  parseInt(document.getElementsByClassName("paid")[i].getAttribute('tip')); 
-                        paid.value =  paid.value + parseInt(document.getElementsByClassName("paid")[i].value);
-                    }
-                
-                    if(document.getElementsByClassName("paid").length== store.state.products.length)
-                    {
-                        for(let i = 0; i< store.state.tables.length; i++)
-                        {
-                            if(store.state.tableActivate ==  store.state.tables[i].id)
-                            {
-                                store.state.tables[i].status = 0
-                            }
-                        }
-
-                        store.dispatch("closeOrderCheckFinallyAction");
-                        finishCheck.value = true;
-                        
-                    }
-
-                    });
-
-                 
-
-                });
-                
-            
-          
         }
 
         const modalCloseFinish = () =>{
-            emit('paycheck');
             emit("show");
+            emit('paycheck');
             store.state.productsSearch  = [],
             store.state.tableActivateNumber = 0,
             store.state.showDiscount        = false;
@@ -151,7 +111,7 @@ export default {
 
         
 
-        return {closeOrderF,closemodalcloseOrder,paid,tipParcial,tip,idsCheck,modalClose,finishCheck,modalCloseFinish}
+        return {closeOrderF,closemodalcloseOrder,paid,tipParcial,idsCheck,modalClose,finishCheck,modalCloseFinish}
     },
     data()
     {
@@ -175,94 +135,16 @@ export default {
         ChangeStateModal()
         {
             closemodalcloseOrder();
-        },
-        totalCheck(event)
-        {
-           this.amountCheck = 0
-           idsCheck = [];
-           this.tipChecks = 0;
-           this.isCheck = 0;
-           if(this.$refs.newCheckPay != undefined)
-           {
-                for(let i = 0; i<this.$refs.newCheckPay.length ; i++)
-                {
-                    if(this.$refs.newCheckPay[i].checked && this.$refs.newCheckPay[i].disabled == false)
-                    {
-                        this.amountCheck  += parseInt(this.$refs.newCheckPay[i].value);
-                        this.isCheck++;
-                        idsCheck.push({"id":this.$refs.newCheckPay[i].id,'tip': 0});
-                        
-                    }
-                }
-
-                this.subtotal = this.amountCheck;
-                this.checkDiscount = (this.amountCheck * this.$store.state.percentage_active)/100;
-
-                if(this.$store.state.percentage_active>0){
-                    this.amountCheck = this.amountCheck -  (this.amountCheck * this.$store.state.percentage_active)/100
-                }
-                
-                
-                
-                this.tipcheck = (this.amountCheck * 0.1);
-                tip =  this.tipcheck;
-                
-                let tipdiv = this.tipcheck/this.isCheck;
-                for(let i = 0; i< idsCheck.length ; i++ ){
-                    idsCheck[i].tip =  tipdiv;
-                }
-
-               
-           }
-        },
-        tipUpdate(event)
-        {
-           this.amountCheck = 0
-           idsCheck = [];
-           this.tipChecks = 0;
-           this.isCheck = 0;
-           if(this.$refs.newCheckPay != undefined)
-           {
-                for(let i = 0; i<this.$refs.newCheckPay.length ; i++)
-                {
-                    if(this.$refs.newCheckPay[i].checked && this.$refs.newCheckPay[i].disabled == false)
-                    {
-                        this.amountCheck  += parseInt(this.$refs.newCheckPay[i].value);
-                        this.isCheck++;
-                        idsCheck.push({"id":this.$refs.newCheckPay[i].id,'tip': 0});
-                        
-                    }
-                }
-
-                this.subtotal = this.amountCheck;
-                this.checkDiscount = (this.amountCheck * this.$store.state.percentage_active)/100;
-
-                if(this.$store.state.percentage_active>0){
-                    this.amountCheck = this.amountCheck -  (this.amountCheck * this.$store.state.percentage_active)/100
-                }
-                
-                let tipdiv = this.tipcheck/this.isCheck;
-                for(let i = 0; i< idsCheck.length ; i++ ){
-                    idsCheck[i].tip =  tipdiv;
-                }
-           }
         }
         
     },
     beforeMount()
     {
-        tipParcial.value = 0
-        paid.value = 0;
+
     },
     mounted()
     {
-        finishCheck.value = false;
-        //store.dispatch("updaterProductsActionCheckPay");
-        for(let i = 0; i<document.getElementsByClassName("paid").length ;i++)
-        {
-            tipParcial.value = tipParcial.value + parseInt(document.getElementsByClassName("paid")[i].getAttribute('tip')); 
-            paid.value = paid.value+ parseInt(document.getElementsByClassName("paid")[i].value);
-        }
+    
     }
     ,updated(){
         

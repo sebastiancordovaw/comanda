@@ -39,11 +39,17 @@ class OrderController extends Controller
         
     }
 
+    public function getOrder(Request $id){
+        
+        $detail =  $this->order->getOrder($id["table"],'table_id');
+        return $detail;
+    }
+
+
     public function getOrderDetail(Request $id){
         
         $detail =  $this->order->getDetail($id["table"],"orders.table_id");
-        $discount =  $this->order->getdiscount($id["table"]);
-        return ['detail'=>$detail, 'discount'=>$discount];
+        return $detail;
     }
 
     public function deleteOrderTable(Request $order_detail){
@@ -54,13 +60,25 @@ class OrderController extends Controller
         return $this->order->applyDiscount($data);
     }
 
-    public function getDiscount(Request $id){
-        return $this->order->getDiscount($id["table"]);
+    public function deleteDiscountPermanent(Request $request)
+    {
+        return $this->order->deleteDiscountPermanent($request['order']);
     }
 
-    public function deleteDiscount(Request $id){
-        return $this->order->deleteDiscount($id["table"]);
+    public function deleteDiscountPercentage(Request $request)
+    {
+        return $this->order->deleteDiscountPercentage($request['order']);
     }
+    public function deleteDiscountProduct(Request $id)
+    {
+        return $this->order->deleteDiscountProduct($id);
+    }
+
+    public function addDiscountProduct(Request $data)
+    {
+        return $this->order->addDiscountProduct($data);
+    }
+
     public function closeOrder(Request $data){
         $this->table->closeTable($data["table"]);
         return $this->order->closeOrder($data);

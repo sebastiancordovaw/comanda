@@ -15,6 +15,9 @@ class OrderDetail extends Model
         'product_id',
         'count',
         'amount',
+        'percentage',
+        'tip',
+        'date_pay',
         'note'
     ];
 

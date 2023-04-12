@@ -7,17 +7,21 @@ const store = createStore({
     state:{
         productsSearch  : [],
         tableActivate   : 0,
+        orderActivate   : 0,
         tableActivateNumber : 0,
         showDiscount        : false,
         tables          : [],
         cart1           : {},
         products        : [], 
+        subtotal_amount_order:0,
         total_amount_order: 0,
+        total_amount_order_paid: 0,
         tip               :0,
         discount          :0,
         porcentage        :0,
-        discount_active          :0,
-        percentage_active      :0,
+        discount_active   :0,
+        discount_active_percentage :0,
+        amount_free:0,
     },
     mutations:{
         setTables(state, payload)
@@ -74,16 +78,100 @@ const store = createStore({
         },
         async getOrderCommit(state)
         {
-            await axios.post('/get-order-detail',{table:state.tableActivate})
-            .then(response=>{
-                state.products                  = response.data.detail;
-                if(response.data.discount!=null)
+            /****LLAMADA A LOS DATOS DE ORDEN */
+            await axios.post('/get-order',{table:state.tableActivate})
+            .then(responseOrder=>{
+
+                state.orderActivate = responseOrder.data.id
+                state.discount_active = responseOrder.data.discount;
+       
+                /****LLAMADA A LOS DATOS DE DETAIL */
+                axios.post('/get-order-detail',{table:state.tableActivate})
+                .then(responseDetail=>{
+                    state.products = responseDetail.data;
+                    store.commit('calculateAmountCommit');
+                }) 
+
+            });
+
+            
+        },
+        calculateAmountCommit(state)
+        {
+            /****resta de todos los valores */
+            state.total_amount_order = 0;
+            /****el valor neto de los productos */
+            state.subtotal_amount_order =0;
+            /*****el valor del procentaje aprlicado */
+            state.discount_active_percentage = 0;
+            /****el valor libre sin porcentaje y sin estar pagado */
+            state.amount_free=0;
+            /****el valor de los productos pagados */
+            state.total_amount_order_paid = 0;
+            /****valor de la propina */
+            if(state.products.length > 0)
+            {
+                for(let i = 0; i< state.products.length; i++)
                 {
-                    state.percentage_active     =  response.data.discount.percentage;
-                    state.discount_active       =  response.data.discount.discount;
+                    if( state.products[i].status > 0)
+                    {    
+                        /**** obtengo el total limpio de los productos agregados**** */
+                        state.subtotal_amount_order += state.products[i].amount;
+                       
+                        if(state.products[i].date_pay == null)
+                        {
+                            if(state.products[i].percentage>0)
+                            {
+                                    /***funcion para calcular el total con el descuento en porcentage***/
+                                    state.discount_active_percentage +=  ((state.products[i].amount * state.products[i].percentage )/ 100);
+
+                                    /****************aqui se calcula lo que mostrara com redultado de la suma de 
+                                 * los produtos con el procetaje aplicado */
+                                    state.total_amount_order += state.products[i].amount - ((state.products[i].amount * state.products[i].percentage )/ 100);
+                            }
+                            else
+                            {
+
+                                    
+                                    state.total_amount_order += state.products[i].amount
+                                    state.amount_free += state.products[i].amount
+                            }
+                        }
+                        else
+                        {
+                            //state.total_amount_order += state.products[i].amount
+                            //state.discount_active_percentage += (state.products[i].amount - ((state.products[i].amount * state.products[i].percentage )/ 100));
+                            state.total_amount_order_paid += state.products[i].amount - ((state.products[i].amount * state.products[i].percentage )/ 100);
+                        }
+                        
+                    }
+                       
                 }
-            })
+
+
+                if(state.discount_active_percentage>0)
+                {
+                     /********************mustra el total de porcentage descontado */
+                    //state.discount_active_percentage = state.subtotal_amount_order - state.discount_active_percentage - state.amount_free - state.total_amount_order_paid;
+                    console.log(state.total_amount_order,'total_amount_order');
+                   
+                    console.log(state.subtotal_amount_order,'subtotal_amount_order');
+                    
+                    console.log(state.discount_active_percentage ,'discount_active_percentage');
                 
+                    console.log(state.amount_free,'amount_free');
+   
+                    console.log(state.total_amount_order_paid,'total_amount_order_paid');
+
+                }  
+                
+                if(state.discount_active>0)
+                {
+                    /********************para mostrar el total restando el descuento fijo */
+                    state.total_amount_order = state.total_amount_order - state.discount_active;
+                }
+
+            }
         },
         async deleteProductOrderCommit(state,payload){
             await axios.post('/delete-order-table',{order_detail:payload.id})
@@ -94,8 +182,12 @@ const store = createStore({
         async applyDiscountCommit(state){
 
             state.showDiscount = false;
-            state.discount_active=state.discount;
-            await axios.post('/apply-discount',{'discount':state.discount,'porcentage':state.porcentage,'table':state.tableActivate})
+            if(state.porcentage == 0)
+            {
+                state.discount_active=state.discount;
+            }
+           
+            await axios.post('/apply-discount',{'percentage':state.porcentage,'discount':state.discount,'table':state.tableActivate})
             .then(response=>{
                 store.commit('getOrderCommit');
             });
@@ -104,22 +196,8 @@ const store = createStore({
         async cancelDiscountCommit(state)
         {
             state.showDiscount = false;
-            await axios.post('/get-discount',{'table':state.tableActivate})
-            .then(response=>{
-                state.percentage_active = response.data.percentage;
-                state.discount_active = response.data.discount;
-            });
         },
-        async deleteDiscountCommit(state){
-            await axios.post('/delete-discount',{'table':parseInt(state.tableActivate)})
-            .then(response=>{
-                state.percentage= 0;
-                state.discount= 0;
-                state.percentage_active = 0;
-                state.discount_active = 0;
-                store.commit('getOrderCommit');
-            });
-        },
+
         async closeOrderCommit(state){
             await axios.post('/close-order',{'table':parseInt(state.tableActivate),'tip':state.tip})
             .then(response=>{
@@ -187,7 +265,46 @@ const store = createStore({
          async updaterProductsCommitCheckPay(state){
             await axios.post('/get-order-detail',{table:state.tableActivate})
             .then(response=>{
-               state.products = response.data.detail;
+                state.products = response.data.detail;
+                setTimeout(() => {
+                    let tip = 0;
+                    let amount = 0;
+                    let countpaid=0;
+                    let amountpay =0;
+                    if(state.products.length>0)
+                    {
+                        for(let i = 0; i<state.products.length ; i++)
+                        {
+                            if(state.products[i].status>0)
+                            {
+                                if( state.products[i].date_pay == null)
+                                {
+                                    amount = amount + state.products[i].amount;
+                                }
+                                else
+                                {
+                                    countpaid++;
+                                }
+                            }
+                        } 
+                        
+                        if(state.percentage_active>0)
+                        {
+                            state.tip = ( (amount*(state.percentage_active/100)) * 0.1) ;
+                            state.discount_active = amount * state.percentage_active/100;
+                        }
+                        else{
+                            state.tip = ( amount * 0.1) ;
+                        }
+
+                        if(state.percentage_active == 0 && state.discount_active > 0 )
+                        {
+                            state.tip = (( amount - state.discount_active ) * 0.1) ;  
+                        }
+                    }
+                    
+                }, 1);
+                
             });
 
          },
@@ -196,10 +313,38 @@ const store = createStore({
             await axios.post('/close-order',{'table':parseInt(state.tableActivate)})
             .then(response=>{
 
-                
                
             });
-         } 
+         },
+         async deleteDiscountPermanentCommit(state)
+         {
+            await axios.post('/delete-discount-permanent',{'order':parseInt(state.orderActivate)})
+            .then(response=>{
+
+                store.commit('getOrderCommit');
+               
+            });
+         },
+         async deleteDiscountPercentageCommit(state)
+         {
+            await axios.post('/delete-discount-percentage',{'order':parseInt(state.orderActivate)})
+            .then(response=>{
+                store.commit('getOrderCommit');
+            });
+         },
+         async delDiscountProductCommit(state, payload){
+            await axios.post('/delete-discount-product',{'product':parseInt(payload)})
+            .then(response=>{
+                store.commit('getOrderCommit');
+            });
+         },
+         async addDiscountProductCommit(state, payload)
+         {
+            await axios.post('/add-discount-product',{'product':payload.product.id,'discount':payload.discount})
+            .then(response=>{
+                store.commit('getOrderCommit');
+            })
+         }
 
     },
     actions:{
@@ -287,8 +432,11 @@ const store = createStore({
         cancelDiscountAction({commit,state}){
             commit('cancelDiscountCommit')
         },
-        deleteDiscountAction({commit,state}){
-            commit('deleteDiscountCommit') 
+        deleteDiscountPermanentAction({commit,state}){
+            commit('deleteDiscountPermanentCommit') 
+        },
+        deleteDiscountPercentageAction({commit,state}){
+            commit('deleteDiscountPercentageCommit')
         },
         closeOrderAction({commit,state}){
             commit('closeOrderCommit') 
@@ -297,17 +445,17 @@ const store = createStore({
         {
             commit('changeTableCommit',{'newTable':tables.newTable, 'oldTable':tables.oldTable}) 
         },
-        closeOrderCheckAction({commit,state},data){
-            commit('closeOrderCheckCommit',data) 
-        },
-        updaterProductsActionCheckPay({commit,state}){
-            commit('updaterProductsCommitCheckPay') 
-        },
-        closeOrderCheckFinallyAction({commit,state})
+        calculateAmountAction({commit,state},tables)
         {
-            commit('closeOrderCheckFinallyCommit');
+            commit('calculateAmountCommit') 
+        },
+        delDiscountProductAction({commit,state},product){
+            commit('delDiscountProductCommit',product) 
+        },
+        addDiscountProductAction({commit,state},product)
+        {
+            commit('addDiscountProductCommit',product);
         }
-        
     },
     getters:{
 

@@ -17,8 +17,6 @@ return new class extends Migration
             $table->id();
             $table->date('date');
             $table->boolean('status')->default(1);
-            $table->integer('percentage')->default(0);
-            $table->integer('discount')->default(0);
             $table->double('total_amount', 8, 2);
             $table->integer('tip')->default(0);
             $table->foreignId('table_id')->constrained();
