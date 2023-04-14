@@ -37,6 +37,7 @@ Route::middleware([
     Route::post('/get-order', [OrderController::class,'getOrder'])->name('get-order');
     Route::post('/get-order-detail', [OrderController::class,'getOrderDetail'])->name('get-order-detail');
     Route::post('/delete-order-table', [OrderController::class,'deleteOrderTable'])->name('delete-order-table');
+    Route::post('/delete-order-paid-table', [OrderController::class,'deleteOrderPaidTable'])->name('delete-order-paid-table');
     Route::post('/apply-discount', [OrderController::class,'applyDiscount'])->name('apply-discount');
     Route::post('/delete-discount-permanent', [OrderController::class,'deleteDiscountPermanent'])->name('delete-discount-permanent');
     Route::post('/delete-discount-percentage', [OrderController::class,'deleteDiscountPercentage'])->name('delete-discount-percentage');

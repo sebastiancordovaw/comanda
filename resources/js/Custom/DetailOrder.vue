@@ -1,6 +1,6 @@
 <template>
     <div v-show="$store.state.products.length">
-        <div class="grid grid-cols-12 bg-gray-100 hover:bg-orange-300 border-orange-700 mt-1 border-l-4 product" v-for="(product) in $store.state.products" :key  = "product.id" :id="product.id" :class ="product.status?'':'delete'" :paid = "(product.date_pay!=null)?true:false">
+        <div class="grid grid-cols-12 bg-gray-100 hover:bg-orange-300 border-orange-700 mt-1 border-l-4 product" v-for="(product) in $store.state.products" :key  = "product.id" :id="product.id" :class ="product.status?'':'delete'" :paid = "(product.date_pay!=null)?true:false" :date_pay="product.date_pay">
             <div class="col-span-2 p-2">{{ product.count }}</div>
             <div class="p-2 col-span-4"><b>{{ product.name }}</b><p><small class="text-sm">{{ product.note }}</small></p></div>
             <div class="col-span-2 text-center text-red-600 p-2 " v-if="product.percentage==0"> 
@@ -16,9 +16,14 @@
                 </div>
             <div class="text-center p-2 col-span-3">${{ product.amount }}</div>
             <div class="col-span-1 p-2">
-                <svg v-if="product.status>0 " :id="'trash_'+product.id"  @click="delProduct(product)" xmlns="http://www.w3.org/2000/svg" style="margin:0 auto; position: relative; cursor: pointer;" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class=" w-5 h-5 text-center text-orange-400 hover:text-orange-600">
-                <path stroke-linecap="round" stroke-linejoin="round" d="M14.74 9l-.346 9m-4.788 0L9.26 9m9.968-3.21c.342.052.682.107 1.022.166m-1.022-.165L18.16 19.673a2.25 2.25 0 01-2.244 2.077H8.084a2.25 2.25 0 01-2.244-2.077L4.772 5.79m14.456 0a48.108 48.108 0 00-3.478-.397m-12 .562c.34-.059.68-.114 1.022-.165m0 0a48.11 48.11 0 013.478-.397m7.5 0v-.916c0-1.18-.91-2.164-2.09-2.201a51.964 51.964 0 00-3.32 0c-1.18.037-2.09 1.022-2.09 2.201v.916m7.5 0a48.667 48.667 0 00-7.5 0" />
-            </svg></div>
+                <svg v-if="product.status>0 && product.date_pay==null" :id="'trash_'+product.id"  @click="delProduct(product)" xmlns="http://www.w3.org/2000/svg" style="margin:0 auto; position: relative; cursor: pointer;" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class=" w-5 h-5 text-center text-orange-400 hover:text-orange-600">
+                    <path stroke-linecap="round" stroke-linejoin="round" d="M14.74 9l-.346 9m-4.788 0L9.26 9m9.968-3.21c.342.052.682.107 1.022.166m-1.022-.165L18.16 19.673a2.25 2.25 0 01-2.244 2.077H8.084a2.25 2.25 0 01-2.244-2.077L4.772 5.79m14.456 0a48.108 48.108 0 00-3.478-.397m-12 .562c.34-.059.68-.114 1.022-.165m0 0a48.11 48.11 0 013.478-.397m7.5 0v-.916c0-1.18-.91-2.164-2.09-2.201a51.964 51.964 0 00-3.32 0c-1.18.037-2.09 1.022-2.09 2.201v.916m7.5 0a48.667 48.667 0 00-7.5 0" />
+                </svg>
+
+                <svg v-if="product.status>0 && product.date_pay!=null" :id="'trash_'+product.id"  @click="delProductPaid(product)" xmlns="http://www.w3.org/2000/svg" style="margin:0 auto; position: relative; cursor: pointer;" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class=" w-5 h-5 text-center text-orange-400 hover:text-orange-600">
+                    <path stroke-linecap="round" stroke-linejoin="round" d="M14.74 9l-.346 9m-4.788 0L9.26 9m9.968-3.21c.342.052.682.107 1.022.166m-1.022-.165L18.16 19.673a2.25 2.25 0 01-2.244 2.077H8.084a2.25 2.25 0 01-2.244-2.077L4.772 5.79m14.456 0a48.108 48.108 0 00-3.478-.397m-12 .562c.34-.059.68-.114 1.022-.165m0 0a48.11 48.11 0 013.478-.397m7.5 0v-.916c0-1.18-.91-2.164-2.09-2.201a51.964 51.964 0 00-3.32 0c-1.18.037-2.09 1.022-2.09 2.201v.916m7.5 0a48.667 48.667 0 00-7.5 0" />
+                </svg>
+            </div>
         </div>
 
         <div  class="grid grid-cols-12 bg-gray-100 hover:bg-green-300 border-green-700 mt-1 border-l-4">
@@ -94,9 +99,6 @@ export default {
     data(){
         return{
             modalShowTable : false,
-            productpay : 0,
-            tip : 0,
-
         }
     },
     setup() {
@@ -114,6 +116,34 @@ export default {
                         }).then((result) => {
                         if (result.isConfirmed) {
                             store.dispatch('deleteProductOrder', product); 
+                        }
+            })
+        }
+
+        const delProductPaid = product => {
+            Swal.fire({
+                        title: 'Seguro de eliminar?',
+                        text: "¡Esta acción no se puede revertir!, se eliminara el pago de todos los productos relacionados a esta compra",
+                        icon: 'warning',
+                        showCancelButton: true,
+                        confirmButtonColor: '#3085d6',
+                        cancelButtonColor: '#d33',
+                        confirmButtonText: 'Si, Eliminar'
+                        }).then((result) => {
+                        if (result.isConfirmed) {
+                            store.dispatch('deleteProductOrderPaid', product); 
+                            let products =  document.getElementsByClassName("product");
+                            let date_pay =  product.date_pay;
+                            console.log(date_pay);
+                            for(let i = 0; i < products.length;  i++)
+                            { 
+                                console.log(products[i].getAttribute('date_pay'));
+                                    if(products[i].getAttribute('date_pay')==date_pay)
+                                    {
+                                        products[i].classList.remove("paid");
+                                    } 
+                            }
+
                         }
             })
         }
@@ -161,10 +191,11 @@ export default {
             })
         }
 
-        return {delProduct,saveDiscount,cancelDiscount,delDiscountPermanent,delDiscountPercentage,delDiscountProduct,addDiscountProduct}
+        return {delProductPaid,delProduct,saveDiscount,cancelDiscount,delDiscountPermanent,delDiscountPercentage,delDiscountProduct,addDiscountProduct}
     },
     methods:{
         openModal(){
+          
             this.modalShowTable =!this.modalShowTable;
             if(this.modalShowTable)
             {
@@ -203,6 +234,8 @@ export default {
        }
     },
     computed:{
+
+
         
     },
     components:{

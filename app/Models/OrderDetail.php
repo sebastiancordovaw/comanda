@@ -40,17 +40,15 @@ class OrderDetail extends Model
         }
     }
 
-    public static function updateProductCheck($data,$tip)
+    public static function updateProductCheck($data)
     {
-        
        $current = DB::raw('CURRENT_TIMESTAMP');
-        foreach($data as $valor){
+        foreach($data["ids"] as $valor){
 
-            $orderDetail = OrderDetail::find(explode("_",$valor["id"])[2]);
+            $orderDetail = OrderDetail::find($valor);
             $orderDetail->date_pay = $current;
-            $orderDetail->tip = $valor["tip"];
+            $orderDetail->tip = $data["tip"]/count($data["ids"]);
             $orderDetail->save();
-
         }
         return true;
     }

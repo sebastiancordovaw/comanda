@@ -24,6 +24,30 @@ const store = createStore({
         amount_free:0,
     },
     mutations:{
+        clearFix(state)
+        {
+            state.productsSearch  = [];
+            state.tableActivate   = 0;
+            state.orderActivate   = 0;
+            state.tableActivateNumber = 0;
+            state.showDiscount        = false;
+            state.cart1           = {};
+            state.products        = [];
+            state.subtotal_amount_order=0;
+            state.total_amount_order= 0;
+            state.total_amount_order_paid= 0;
+            state.tip               =0;
+            state.discount          =0;
+            state.porcentage        =0;
+            state.discount_active   =0;
+            state.discount_active_percentage =0;
+            state.amount_free=0;
+
+
+            localStorage.setItem("table",null);
+            localStorage.setItem("cart1",{});
+            localStorage.setItem("tableNumber",0);
+        },
         setTables(state, payload)
         {
             state.tables = payload;
@@ -109,6 +133,7 @@ const store = createStore({
             /****el valor de los productos pagados */
             state.total_amount_order_paid = 0;
             /****valor de la propina */
+            state.tip = 0;
             if(state.products.length > 0)
             {
                 for(let i = 0; i< state.products.length; i++)
@@ -122,6 +147,7 @@ const store = createStore({
                         {
                             if(state.products[i].percentage>0)
                             {
+                                
                                     /***funcion para calcular el total con el descuento en porcentage***/
                                     state.discount_active_percentage +=  ((state.products[i].amount * state.products[i].percentage )/ 100);
 
@@ -139,6 +165,7 @@ const store = createStore({
                         }
                         else
                         {
+                            state.tip += state.products[i].tip;
                             //state.total_amount_order += state.products[i].amount
                             //state.discount_active_percentage += (state.products[i].amount - ((state.products[i].amount * state.products[i].percentage )/ 100));
                             state.total_amount_order_paid += state.products[i].amount - ((state.products[i].amount * state.products[i].percentage )/ 100);
@@ -147,7 +174,6 @@ const store = createStore({
                     }
                        
                 }
-
 
                 if(state.discount_active_percentage>0)
                 {
@@ -179,6 +205,12 @@ const store = createStore({
                 store.commit('getOrderCommit');
             });
         },
+        async deleteProductOrderPaidCommit(state,payload){
+            await axios.post('/delete-order-paid-table',{order_detail:payload.id})
+            .then(response=>{
+                store.commit('getOrderCommit');
+            });
+        },
         async applyDiscountCommit(state){
 
             state.showDiscount = false;
@@ -198,8 +230,8 @@ const store = createStore({
             state.showDiscount = false;
         },
 
-        async closeOrderCommit(state){
-            await axios.post('/close-order',{'table':parseInt(state.tableActivate),'tip':state.tip})
+        async closeOrderCommit(state,payload){
+            await axios.post('/close-order',{'table':parseInt(state.tableActivateNumber),'order':parseInt(state.orderActivate),'tip':payload})
             .then(response=>{
                 for(let i = 0; i< state.tables.length; i++){
                     if(state.tableActivate ==  state.tables[i].id)
@@ -208,22 +240,7 @@ const store = createStore({
                     }
                 }
 
-                state.productsSearch  = [],
-                state.tableActivateNumber = 0,
-                state.showDiscount        = false;
-                delete state.cart1[state.tableActivate];
-                state.products        = []; 
-                state.total_amount_order = 0,
-                state.tip               =0;
-                state.discount          =0;
-                state.porcentage        =0;
-                state.discount_active   =0;
-                state.percentage_active =0;
-                state.tableActivate   = 0;
-                
-                localStorage.setItem("table",null);
-                localStorage.setItem("cart1",{});
-                localStorage.getItem("tableNumber",0);
+                store.commit('clearFix');
             });
          },
          async changeTableCommit(state,payload)
@@ -251,62 +268,11 @@ const store = createStore({
                 
             });
          },
-         async closeOrderCheckCommit(state,payload){
-          if(payload.products.length>0)
-          {
-        
-            await axios.post('/close-order-check',payload)
+         async closeOrderCheckCommit(state, payload){
+            await axios.post('/close-order-check',{'ids':payload.ids,'tip':payload.tip})
             .then(response=>{
-                //state.products = response.data;
-            });
-        }
-            
-         },
-         async updaterProductsCommitCheckPay(state){
-            await axios.post('/get-order-detail',{table:state.tableActivate})
-            .then(response=>{
-                state.products = response.data.detail;
-                setTimeout(() => {
-                    let tip = 0;
-                    let amount = 0;
-                    let countpaid=0;
-                    let amountpay =0;
-                    if(state.products.length>0)
-                    {
-                        for(let i = 0; i<state.products.length ; i++)
-                        {
-                            if(state.products[i].status>0)
-                            {
-                                if( state.products[i].date_pay == null)
-                                {
-                                    amount = amount + state.products[i].amount;
-                                }
-                                else
-                                {
-                                    countpaid++;
-                                }
-                            }
-                        } 
-                        
-                        if(state.percentage_active>0)
-                        {
-                            state.tip = ( (amount*(state.percentage_active/100)) * 0.1) ;
-                            state.discount_active = amount * state.percentage_active/100;
-                        }
-                        else{
-                            state.tip = ( amount * 0.1) ;
-                        }
-
-                        if(state.percentage_active == 0 && state.discount_active > 0 )
-                        {
-                            state.tip = (( amount - state.discount_active ) * 0.1) ;  
-                        }
-                    }
-                    
-                }, 1);
-                
-            });
-
+                store.commit('getOrderCommit');
+            })
          },
          async closeOrderCheckFinallyCommit(state, payload)
          {
@@ -422,6 +388,10 @@ const store = createStore({
         {
             commit('deleteProductOrderCommit',product);
         },
+        deleteProductOrderPaid({commit,state},product)
+        {
+            commit('deleteProductOrderPaidCommit',product);
+        },
         commentAction({commit,state},data)
         {
             commit('commentCommit',{payload:data.product,comment:data.comment});
@@ -438,8 +408,12 @@ const store = createStore({
         deleteDiscountPercentageAction({commit,state}){
             commit('deleteDiscountPercentageCommit')
         },
-        closeOrderAction({commit,state}){
-            commit('closeOrderCommit') 
+        closeOrderAction({commit,state},tip){
+            commit('closeOrderCommit',tip) 
+        },
+        closeOrderCheckAction({commit,state},data)
+        {
+            commit('closeOrderCheckCommit',data);
         },
         changeTableAction({commit,state},tables)
         {

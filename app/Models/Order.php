@@ -8,6 +8,7 @@ use App\Models\OrderDetail;
 use App\Models\Table;
 use Carbon\Carbon;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\DB;
 
 class Order extends Model
 {
@@ -102,6 +103,21 @@ class Order extends Model
         $detail->save();
     }
 
+    public function deleteOrderPaid($id)
+    {
+        $detail = OrderDetail::find($id);
+        $detail->date_pay;
+      
+
+        OrderDetail::where('status', 1)
+        ->where('order_id', $detail->order_id )
+        ->where('date_pay', $detail->date_pay )
+        ->update([
+                    'tip' =>0,
+                    "date_pay" =>null
+                ]);
+    }
+
     public static function applyDiscount($data)
     {
         $orderFind = (new static)::
@@ -172,21 +188,42 @@ class Order extends Model
         $detail->save();
     }
 
-    public static function closeOrder($data){
-        
-        $order = (new static)::
-        where("table_id",$data['table'])
-        ->where("status",1)
-        ->first();
-
-        if(isset($data['tip']))
-        {
-            $order->tip=$data['tip'];
-        }
-        
+    public static function closeOrder($data)
+    {
+        $order = (new static)::find($data['order']);
         $order->status=0;
         $order->save();
 
+        $count = OrderDetail::where('status', 1)
+        ->where('order_id', $data['order'])
+        ->where('date_pay', null)
+        ->count();
+        OrderDetail::where('status', 1)
+        ->where('order_id', $data['order'])
+        ->where('date_pay', null)
+        ->update([
+                    'tip' => $data['tip']/$count,
+                    "date_pay" =>$current = DB::raw('CURRENT_TIMESTAMP')
+                ]);
+    }
+
+    public static function closeOrderCheck($data)
+    {
+        $order = (new static)::find($data['order']);
+        $order->status=0;
+        $order->save();
+
+        $count = OrderDetail::where('status', 1)
+        ->where('order_id', $data['order'])
+        ->where('date_pay', null)
+        ->count();
+        OrderDetail::where('status', 1)
+        ->where('order_id', $data['order'])
+        ->where('date_pay', null)
+        ->update([
+                    'tip' => $data['tip']/$count,
+                    "date_pay" =>$current = DB::raw('CURRENT_TIMESTAMP')
+                ]);
     }
 
     public function changeTable($data){
