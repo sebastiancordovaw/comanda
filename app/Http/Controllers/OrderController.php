@@ -59,7 +59,7 @@ class OrderController extends Controller
     public function deleteOrderPaidTable(Request $order_detail){
         return $this->order->deleteOrderPaid($order_detail['order_detail']);
     }
-    
+
     public function applyDiscount(Request $data){
         return $this->order->applyDiscount($data);
     }
@@ -86,7 +86,6 @@ class OrderController extends Controller
     public function closeOrder(Request $data){
         $this->table->closeTable($data["table"]);
         return $this->order->closeOrder($data);
-
     }
 
     public function CloseOrderCheck(Request $data){
@@ -94,6 +93,12 @@ class OrderController extends Controller
         $this->orderDetail->updateProductCheck($data);
         $detail =  $this->order->getDetail($data["table"],"orders.table_id");
         return $detail;
+    }
+
+    public function CloseOrderCheckFinally(Request $data)
+    {
+        $this->table->closeTable($data["table"]);
+        return $this->order->closeOrderFinally($data['order']);
     }
 
 

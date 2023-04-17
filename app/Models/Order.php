@@ -61,9 +61,6 @@ class Order extends Model
         else
         {
             $order = (new static)::find($find->id);
-
-            /******realizar funcion cuando hay descuento *********** */
-
             $order->total_amount += $total_amount;
             $order->save();
         }
@@ -74,7 +71,7 @@ class Order extends Model
 
     public function getDetail($id,$from = "order_id"){
 
-        return OrderDetail::select('order_details.id','order_details.percentage','order_details.status','order_details.order_id','order_details.count','order_details.amount','order_details.note','products.name','order_details.product_id','orders.table_id','order_details.date_pay', 'order_details.tip')
+        return OrderDetail::select('order_details.id','order_details.is_percentage','payment_removed','order_details.percentage','order_details.status','order_details.order_id','order_details.count','order_details.amount','order_details.note','products.name','order_details.product_id','orders.table_id','order_details.date_pay', 'order_details.tip')
         ->where($from,$id) 
         ->where('orders.status',"=",1)
         ->join('orders', function($join) 
@@ -85,7 +82,8 @@ class Order extends Model
         {
             $join->on('order_details.product_id', '=', 'products.id');
         })
-       
+        ->orderBy("order_details.date_pay", "asc")
+        ->orderBy("order_details.id", "asc")
         ->get();
     }
 
@@ -106,16 +104,30 @@ class Order extends Model
     public function deleteOrderPaid($id)
     {
         $detail = OrderDetail::find($id);
-        $detail->date_pay;
-      
+        $current = DB::raw('CURRENT_TIMESTAMP');
+        
+        if($detail->is_percentage)
+        {
+            $detail->tip = 0;
+            $detail->date_pay = null;
+            $detail->payment_removed = $current;
+            $detail->save();
 
-        OrderDetail::where('status', 1)
-        ->where('order_id', $detail->order_id )
-        ->where('date_pay', $detail->date_pay )
-        ->update([
-                    'tip' =>0,
-                    "date_pay" =>null
-                ]);
+            return 'is_percentage';
+        }
+        else{
+            
+            OrderDetail::where('status', 1)
+            ->where('order_id', $detail->order_id )
+            ->where('date_pay', $detail->date_pay )
+            ->update([
+                        'tip' =>0,
+                        "date_pay" =>null,
+                        "payment_removed" =>$current
+                    ]);
+            return 'is_batch';
+        }
+        
     }
 
     public static function applyDiscount($data)
@@ -157,7 +169,11 @@ class Order extends Model
             if($detail['date_pay']==null && $detail['status']>0)
             {
                 $product = OrderDetail::find($detail['id']);
-                $product->percentage = $percentage;
+                if($product->percentage < $percentage)
+                {
+                    $product->percentage = $percentage;
+                }
+                
                 $product->save();
             }
             
@@ -190,40 +206,61 @@ class Order extends Model
 
     public static function closeOrder($data)
     {
+        $current = DB::raw('CURRENT_TIMESTAMP');
+
+        $orderDetail = OrderDetail::where('status', 1)
+        ->where('order_id', $data['order'])
+        ->where('date_pay', null)
+        ->get();
+        
+        $products_value = 0;
+        $count = 0;
+        foreach($orderDetail as $valor)
+        {
+            if($valor->percentage)
+            {
+                $products_value += ($valor->amount - ( $valor->amount * $valor->percentage / 100)) * 0.1;
+            }
+            else
+            {
+                $products_value +=  ($valor->amount * 0.1);
+            }
+            $count++;
+        }
+
+        foreach($orderDetail as $valor)
+        {
+            $orderDetail = OrderDetail::find($valor->id);
+            $orderDetail->date_pay = $current;
+            if($products_value==$data["tip"])
+            {
+                if($orderDetail->percentage>0)
+                {
+                    $orderDetail->tip = ($orderDetail->amount - ( $orderDetail->amount * $orderDetail->percentage / 100)) * 0.1;
+                }
+                else
+                {
+                    $orderDetail->tip = $orderDetail->amount * 0.1;
+                }
+                $orderDetail->is_percentage = 1;
+            }
+            else
+            {
+                $orderDetail->tip = $data["tip"]/$count;
+            }
+            $orderDetail->save();
+        }
+
         $order = (new static)::find($data['order']);
         $order->status=0;
         $order->save();
-
-        $count = OrderDetail::where('status', 1)
-        ->where('order_id', $data['order'])
-        ->where('date_pay', null)
-        ->count();
-        OrderDetail::where('status', 1)
-        ->where('order_id', $data['order'])
-        ->where('date_pay', null)
-        ->update([
-                    'tip' => $data['tip']/$count,
-                    "date_pay" =>$current = DB::raw('CURRENT_TIMESTAMP')
-                ]);
     }
 
-    public static function closeOrderCheck($data)
+    public static function closeOrderFinally($id)
     {
-        $order = (new static)::find($data['order']);
+        $order = (new static)::find($id);
         $order->status=0;
         $order->save();
-
-        $count = OrderDetail::where('status', 1)
-        ->where('order_id', $data['order'])
-        ->where('date_pay', null)
-        ->count();
-        OrderDetail::where('status', 1)
-        ->where('order_id', $data['order'])
-        ->where('date_pay', null)
-        ->update([
-                    'tip' => $data['tip']/$count,
-                    "date_pay" =>$current = DB::raw('CURRENT_TIMESTAMP')
-                ]);
     }
 
     public function changeTable($data){

@@ -44,8 +44,11 @@ Route::middleware([
     Route::post('/delete-discount-product', [OrderController::class,'deleteDiscountProduct'])->name('delete-discount-product');
     Route::post('/add-discount-product', [OrderController::class,'addDiscountProduct'])->name('add-discount-product');
     Route::post('/close-order', [OrderController::class,'closeOrder'])->name('close-order');
-    Route::post('/change-table', [TableController::class,'changeTable'])->name('change-table');
     Route::post('/close-order-check', [OrderController::class,'CloseOrderCheck'])->name('close-order-check');
+    Route::post('/close-order-check-finally', [OrderController::class,'CloseOrderCheckFinally'])->name('close-order-check-finally');
+    Route::post('/change-table', [TableController::class,'changeTable'])->name('change-table');
+
+
     
     
     

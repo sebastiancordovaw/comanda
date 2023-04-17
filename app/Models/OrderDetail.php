@@ -42,12 +42,41 @@ class OrderDetail extends Model
 
     public static function updateProductCheck($data)
     {
-       $current = DB::raw('CURRENT_TIMESTAMP');
-        foreach($data["ids"] as $valor){
+        $current = DB::raw('CURRENT_TIMESTAMP');
+        $products_value = 0;
+        foreach($data["ids"] as $valor)
+        {
+            $orderDetail = OrderDetail::where("id",$valor)->first();
+            if($orderDetail->percentage)
+            {
+                $products_value += ($orderDetail->amount - ( $orderDetail->amount * $orderDetail->percentage / 100)) * 0.1;
+            }
+            else
+            {
+                $products_value +=  ($orderDetail->amount * 0.1);
+            }
+        }
 
+        foreach($data["ids"] as $valor)
+        {
             $orderDetail = OrderDetail::find($valor);
             $orderDetail->date_pay = $current;
-            $orderDetail->tip = $data["tip"]/count($data["ids"]);
+            if($products_value==$data["tip"])
+            {
+                if($orderDetail->percentage>0)
+                {
+                    $orderDetail->tip = ($orderDetail->amount - ( $orderDetail->amount * $orderDetail->percentage / 100)) * 0.1;
+                }
+                else
+                {
+                    $orderDetail->tip = $orderDetail->amount * 0.1;
+                }
+                $orderDetail->is_percentage = 1;
+            }
+            else
+            {
+                $orderDetail->tip = $data["tip"]/count($data["ids"]);
+            }
             $orderDetail->save();
         }
         return true;

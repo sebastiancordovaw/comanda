@@ -18,7 +18,7 @@ return new class extends Migration
             $table->date('date');
             $table->boolean('status')->default(1);
             $table->double('total_amount', 8, 2);
-            $table->integer('tip')->default(0);
+            $table->double('discount', 8, 2)->default(0);
             $table->foreignId('table_id')->constrained();
             $table->foreignId('user_id')->constrained();
             $table->timestamps();

@@ -134,6 +134,8 @@ const store = createStore({
             state.total_amount_order_paid = 0;
             /****valor de la propina */
             state.tip = 0;
+            /******** valor de contador de los productos sin pagar */
+       
             if(state.products.length > 0)
             {
                 for(let i = 0; i< state.products.length; i++)
@@ -147,13 +149,12 @@ const store = createStore({
                         {
                             if(state.products[i].percentage>0)
                             {
-                                
-                                    /***funcion para calcular el total con el descuento en porcentage***/
-                                    state.discount_active_percentage +=  ((state.products[i].amount * state.products[i].percentage )/ 100);
+                                /***funcion para calcular el total con el descuento en porcentage***/
+                                state.discount_active_percentage +=  ((state.products[i].amount * state.products[i].percentage )/ 100);
 
-                                    /****************aqui se calcula lo que mostrara com redultado de la suma de 
-                                 * los produtos con el procetaje aplicado */
-                                    state.total_amount_order += state.products[i].amount - ((state.products[i].amount * state.products[i].percentage )/ 100);
+                                /****************aqui se calcula lo que mostrara com redultado de la suma de 
+                             * los produtos con el procetaje aplicado */
+                                state.total_amount_order += state.products[i].amount - ((state.products[i].amount * state.products[i].percentage )/ 100);
                             }
                             else
                             {
@@ -243,6 +244,26 @@ const store = createStore({
                 store.commit('clearFix');
             });
          },
+         async closeOrderCheckCommit(state, payload){
+            await axios.post('/close-order-check',{'ids':payload.ids,'tip':payload.tip})
+            .then(response=>{
+                store.commit('getOrderCommit');
+            })
+         },
+         async closeOrderCheckFinallyCommit(state, payload){
+            await axios.post('/close-order-check-finally',{'table':payload.table,'order':payload.order})
+            .then(response=>{
+
+                for(let i = 0; i< state.tables.length; i++){
+                    if(state.tableActivate ==  state.tables[i].id)
+                    {
+                        state.tables[i].status = 0
+                    }
+                }
+                
+                store.commit('clearFix');
+            })
+         },
          async changeTableCommit(state,payload)
          {
             await axios.post('/change-table',{'newTable':payload.newTable,'oldTable':payload.oldTable})
@@ -266,20 +287,6 @@ const store = createStore({
                     store.commit('getOrderCommit'); 
                 }
                 
-            });
-         },
-         async closeOrderCheckCommit(state, payload){
-            await axios.post('/close-order-check',{'ids':payload.ids,'tip':payload.tip})
-            .then(response=>{
-                store.commit('getOrderCommit');
-            })
-         },
-         async closeOrderCheckFinallyCommit(state, payload)
-         {
-            await axios.post('/close-order',{'table':parseInt(state.tableActivate)})
-            .then(response=>{
-
-               
             });
          },
          async deleteDiscountPermanentCommit(state)
@@ -414,6 +421,10 @@ const store = createStore({
         closeOrderCheckAction({commit,state},data)
         {
             commit('closeOrderCheckCommit',data);
+        },
+        closeOrderCheckFinallyAction({commit,state},data)
+        {
+            commit('closeOrderCheckFinallyCommit',data);
         },
         changeTableAction({commit,state},tables)
         {

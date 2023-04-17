@@ -23,7 +23,10 @@ return new class extends Migration
             $table->boolean('status')->default(1);
             $table->double('tip', 8, 2)->default(0);
             $table->integer('percentage')->default(0);
+            $table->double('discount', 8, 2)->default(0);
             $table->timestamp('date_pay')->nullable();
+            $table->timestamp('payment_removed')->nullable();
+            $table->boolean('is_percentage')->default(0);
             $table->timestamps();
         });
     }

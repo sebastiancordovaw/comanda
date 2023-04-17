@@ -1,6 +1,7 @@
 <template>
     <div v-show="$store.state.products.length">
-        <div class="grid grid-cols-12 bg-gray-100 hover:bg-orange-300 border-orange-700 mt-1 border-l-4 product" v-for="(product) in $store.state.products" :key  = "product.id" :id="product.id" :class ="product.status?'':'delete'" :paid = "(product.date_pay!=null)?true:false" :date_pay="product.date_pay">
+        <template v-for="(product) in $store.state.products" :key  = "product.id">
+        <div v-if="product.date_pay==null" class="grid grid-cols-12 bg-gray-100 hover:bg-orange-300 border-orange-700 mt-1 border-l-4 product"  :id="product.id" :class ="product.status?'':'delete'" :paid = "(product.date_pay!=null)?true:false" :is_percentage = "(product.is_percentage)?true:false" :date_pay="product.date_pay">
             <div class="col-span-2 p-2">{{ product.count }}</div>
             <div class="p-2 col-span-4"><b>{{ product.name }}</b><p><small class="text-sm">{{ product.note }}</small></p></div>
             <div class="col-span-2 text-center text-red-600 p-2 " v-if="product.percentage==0"> 
@@ -14,7 +15,7 @@
                     <path stroke-linecap="round" stroke-linejoin="round" d="M9.75 9.75l4.5 4.5m0-4.5l-4.5 4.5M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
                     </svg>
                 </div>
-            <div class="text-center p-2 col-span-3">${{ product.amount }}</div>
+            <div class=" p-2 col-span-3 text-right"><span :class="(product.percentage)?'line-through text-gray-600':''"> $ {{ product.amount }}</span> <span class="text-red-600 font-bold" v-if="product.percentage">$ {{ product.amount - (product.amount * product.percentage / 100)}}</span></div>
             <div class="col-span-1 p-2">
                 <svg v-if="product.status>0 && product.date_pay==null" :id="'trash_'+product.id"  @click="delProduct(product)" xmlns="http://www.w3.org/2000/svg" style="margin:0 auto; position: relative; cursor: pointer;" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class=" w-5 h-5 text-center text-orange-400 hover:text-orange-600">
                     <path stroke-linecap="round" stroke-linejoin="round" d="M14.74 9l-.346 9m-4.788 0L9.26 9m9.968-3.21c.342.052.682.107 1.022.166m-1.022-.165L18.16 19.673a2.25 2.25 0 01-2.244 2.077H8.084a2.25 2.25 0 01-2.244-2.077L4.772 5.79m14.456 0a48.108 48.108 0 00-3.478-.397m-12 .562c.34-.059.68-.114 1.022-.165m0 0a48.11 48.11 0 013.478-.397m7.5 0v-.916c0-1.18-.91-2.164-2.09-2.201a51.964 51.964 0 00-3.32 0c-1.18.037-2.09 1.022-2.09 2.201v.916m7.5 0a48.667 48.667 0 00-7.5 0" />
@@ -25,17 +26,25 @@
                 </svg>
             </div>
         </div>
+        </template>
 
+        <!--
         <div  class="grid grid-cols-12 bg-gray-100 hover:bg-green-300 border-green-700 mt-1 border-l-4">
             <div class="col-span-3 p-2 "><b class="text-green-600">Subtotal</b></div>
             <div class="col-span-5 p-2"></div>
             <div class="col-span-3 text-center p-2"><b class="text-green-600">$ {{ $store.state.subtotal_amount_order }}</b></div>
         </div>
+        -->
 
-        <div v-if="$store.state.total_amount_order_paid>0"  class="grid grid-cols-12 bg-gray-100 hover:bg-green-300 border-green-700 mt-1 border-l-4">
+        <div v-if="$store.state.total_amount_order_paid>0"  class="grid grid-cols-12 bg-gray-100 border-green-700 mt-1 border-l-4">
             <div class="col-span-3 p-2 "><b class="text-green-600">Pagado</b></div>
-            <div class="col-span-5 p-2"></div>
-            <div class="col-span-3 text-center p-2"><b class="text-green-600">$ {{ $store.state.total_amount_order_paid }}</b></div>
+            <div class="col-span-4 p-2"></div>
+            <div class="col-span-4 text-center p-2 text-right"><b class="text-green-600">$ {{ $store.state.total_amount_order_paid + $store.state.tip}}</b></div>
+            <div class="col-span-1 text-center p-2 ">
+                <svg @click = "openModalPaid" class="w-6 h-6 text-green-500 hover:text-green-700" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" d="M15.75 15.75l-2.489-2.489m0 0a3.375 3.375 0 10-4.773-4.773 3.375 3.375 0 004.774 4.774zM21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+                </svg>
+            </div>
         </div>
 
         <!--SE ACTiva cuando he ingresado un descuento fijo -->
@@ -88,17 +97,20 @@
         <div class="clear-both"></div>
     </div>
     <modal-close-order  :show ="modalShowTable" @show="openModal()" ></modal-close-order>
+    <order-paid  :show ="modalPaid" @show="openModalPaid()" @showOrderPaid ="openModalPaid()"  ></order-paid >
 </template>
 
 <script>
 import { useStore } from 'vuex';
 import ModalCloseOrder from '@/Custom/ModalCloseOrder.vue'
+import OrderPaid from '@/Custom/OrderPaid.vue'
 import Swal from 'sweetalert2';
 export default {
     
     data(){
         return{
             modalShowTable : false,
+            modalPaid : false,
         }
     },
     setup() {
@@ -121,9 +133,21 @@ export default {
         }
 
         const delProductPaid = product => {
+            let title ="";
+            let text ="";
+            if(product.is_percentage)
+            {
+                title= "Seguro de revertir?";
+                text= "Esta seguro que desea revetir el pago de esta compra";
+            }
+            else
+            {
+                title= "Esta compra tiene más productos relacionados";
+                text= "Esta seguro que desea revetir los pagos de esta compra?";
+            }
             Swal.fire({
-                        title: 'Seguro de eliminar?',
-                        text: "¡Esta acción no se puede revertir!, se eliminara el pago de todos los productos relacionados a esta compra",
+                        title:title,
+                        text: text,
                         icon: 'warning',
                         showCancelButton: true,
                         confirmButtonColor: '#3085d6',
@@ -132,18 +156,6 @@ export default {
                         }).then((result) => {
                         if (result.isConfirmed) {
                             store.dispatch('deleteProductOrderPaid', product); 
-                            let products =  document.getElementsByClassName("product");
-                            let date_pay =  product.date_pay;
-                            console.log(date_pay);
-                            for(let i = 0; i < products.length;  i++)
-                            { 
-                                console.log(products[i].getAttribute('date_pay'));
-                                    if(products[i].getAttribute('date_pay')==date_pay)
-                                    {
-                                        products[i].classList.remove("paid");
-                                    } 
-                            }
-
                         }
             })
         }
@@ -197,11 +209,13 @@ export default {
         openModal(){
           
             this.modalShowTable =!this.modalShowTable;
-            if(this.modalShowTable)
-            {
-
-            }
         },
+        openModalPaid(){
+          
+          this.modalPaid =!this.modalPaid;
+          console.log(this.modalPaid);
+        }
+        ,
         showformDiscount()
         {
             this.$store.state.discount          =0;
@@ -239,7 +253,8 @@ export default {
         
     },
     components:{
-        ModalCloseOrder
+        ModalCloseOrder,
+        OrderPaid
     }
 }
 </script>
