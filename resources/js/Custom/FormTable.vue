@@ -6,7 +6,7 @@
             <Dropdown align="down" width="100%" :contentClasses="['py-0']">
                 <template #trigger>
                     <div class="relative mx-auto text-gray-600">
-                        <input  v-show="$store.state.tableActivate>0" v-model="searchInput" type="text" @change="clearInput()" @keyup="searchProduct()" name="" id="" class="focus:ring-transparent w-full border-t border-b border-l border-r border-gray-400 focus:border-orange-700">
+                        <input  v-show="$store.state.tableActivateNumber>0" v-model="searchInput" type="text" @change="clearInput()" @keyup="searchProduct()" name="" id="" class="focus:ring-transparent w-full border-t border-b border-l border-r border-gray-400 focus:border-orange-700">
                     </div>
                 </template>
 
@@ -90,6 +90,11 @@ export default {
     ,components:{
         Dropdown,
         Cart1
+    },
+    mounted()
+    {
+       
     }
 }
+
 </script>

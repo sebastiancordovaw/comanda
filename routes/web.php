@@ -31,6 +31,7 @@ Route::middleware([
         return Inertia::render('Dashboard');
     })->name('dashboard');
 
+
     Route::post('/get-products', [ProductController::class,'getProducts'])->name('get-products');
     Route::post('/get-tables', [TableController::class,'getTables'])->name('get-tables');
     Route::post('/set-order-detail', [OrderController::class,'setOrderDetail'])->name('set-order-detail');
@@ -47,7 +48,7 @@ Route::middleware([
     Route::post('/close-order-check', [OrderController::class,'CloseOrderCheck'])->name('close-order-check');
     Route::post('/close-order-check-finally', [OrderController::class,'CloseOrderCheckFinally'])->name('close-order-check-finally');
     Route::post('/change-table', [TableController::class,'changeTable'])->name('change-table');
-
+    Route::post('/get-orders-actives', [OrderController::class,'getOrdersActives'])->name('get-orders-actives');
 
     
     

@@ -67,7 +67,7 @@
                     
             </div>
             <div class="p-4 ">
-                    <button v-if="!finishCheck" @click = "closeOrderCheck" class="p-1 rounded-sm bg-orange-200 hover:bg-orange-300 mr-4 p-2  border-t border-b border-l border-r border-orange-700 text-orange-800 float-right ">Confirmar</button>
+                    <button @click = "closeOrderCheck" class="p-1 rounded-sm bg-orange-200 hover:bg-orange-300 mr-4 p-2  border-t border-b border-l border-r border-orange-700 text-orange-800 float-right ">Confirmar</button>
                     <button @click = "modalClose" class="p-1 rounded-sm bg-gray-200 hover:bg-gray-300 mr-4 p-2  border-t border-b border-l border-r border-gray-700 text-gray-800 float-right">Cerrar</button>
                    
                     <div class="clear-both"></div>

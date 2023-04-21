@@ -105,6 +105,7 @@ import { useStore } from 'vuex';
 import ModalCloseOrder from '@/Custom/ModalCloseOrder.vue'
 import OrderPaid from '@/Custom/OrderPaid.vue'
 import Swal from 'sweetalert2';
+import { onMounted, onUpdated } from 'vue';
 export default {
     
     data(){
@@ -116,6 +117,7 @@ export default {
     setup() {
         const store = useStore();
 
+    
         const delProduct = product => {
             Swal.fire({
                         title: 'Seguro de eliminar?',
@@ -126,8 +128,9 @@ export default {
                         cancelButtonColor: '#d33',
                         confirmButtonText: 'Si, Eliminar'
                         }).then((result) => {
-                        if (result.isConfirmed) {
-                            store.dispatch('deleteProductOrder', product); 
+                        if (result.isConfirmed) 
+                        {
+                            store.dispatch('deleteProductOrder', product);
                         }
             })
         }
@@ -207,13 +210,10 @@ export default {
     },
     methods:{
         openModal(){
-          
             this.modalShowTable =!this.modalShowTable;
         },
         openModalPaid(){
-          
-          this.modalPaid =!this.modalPaid;
-          console.log(this.modalPaid);
+            this.modalPaid =!this.modalPaid;
         }
         ,
         showformDiscount()

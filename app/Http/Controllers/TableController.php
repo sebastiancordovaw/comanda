@@ -28,14 +28,10 @@ class TableController extends Controller
 
     public function changeTable(Request $data){
         $return = $this->table->changeTable($data);
-
         if($return )
         {
             return $this->order->changeTable($data);
         }
-
         return $return;
-        
-        
     }
 }

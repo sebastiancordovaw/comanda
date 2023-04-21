@@ -45,6 +45,13 @@ class OrderController extends Controller
         return $detail;
     }
 
+    
+    public function getOrdersActives(){
+        
+        $orders =  $this->order->getOrdersActives();
+        return $orders;
+    }
+
 
     public function getOrderDetail(Request $id){
         

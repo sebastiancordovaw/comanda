@@ -8,6 +8,7 @@ const store = createStore({
         productsSearch  : [],
         tableActivate   : 0,
         orderActivate   : 0,
+        orders          : [],
         tableActivateNumber : 0,
         showDiscount        : false,
         tables          : [],
@@ -27,7 +28,7 @@ const store = createStore({
         clearFix(state)
         {
             state.productsSearch  = [];
-            state.tableActivate   = 0;
+            //state.tableActivate   = 0;
             state.orderActivate   = 0;
             state.tableActivateNumber = 0;
             state.showDiscount        = false;
@@ -294,7 +295,7 @@ const store = createStore({
             await axios.post('/delete-discount-permanent',{'order':parseInt(state.orderActivate)})
             .then(response=>{
 
-                store.commit('getOrderCommit');
+                //store.commit('getOrderCommit');
                
             });
          },
@@ -346,6 +347,7 @@ const store = createStore({
             try{
                 await axios.post('/get-tables')
                 .then(response=>{
+                    console.log(response.data);
                     commit('setTables',response.data);
                 });  
             }
@@ -440,6 +442,10 @@ const store = createStore({
         addDiscountProductAction({commit,state},product)
         {
             commit('addDiscountProductCommit',product);
+        },
+        clearFixAction({commit,state})
+        {
+            commit('clearFix');
         }
     },
     getters:{

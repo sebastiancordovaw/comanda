@@ -9,6 +9,9 @@ use App\Models\Table;
 use Carbon\Carbon;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
+use App\Events\OrdersActiveEvent;
+use App\Events\TableEvent;
+use App\Events\CloseTableEvent;
 
 class Order extends Model
 {
@@ -94,11 +97,24 @@ class Order extends Model
         ->first();
     }
 
+    public function getOrdersActives(){
+
+        return (new static)::select('orders.id')
+        ->where('orders.status',"=",1) 
+        ->where('tables.status',"=",1)
+        ->join('tables', function($join) 
+        {
+            $join->on('orders.table_id', '=', 'tables.id');
+        })
+        ->get();
+    }
+
     public function deleteOrder($id)
     {
         $detail = OrderDetail::find($id);
         $detail->status = 0;
         $detail->save();
+        event(new OrdersActiveEvent($detail->order_id));
     }
 
     public function deleteOrderPaid($id)
@@ -127,6 +143,8 @@ class Order extends Model
                     ]);
             return 'is_batch';
         }
+
+        event(new OrdersActiveEvent($detail->order_id));
         
     }
 
@@ -158,9 +176,11 @@ class Order extends Model
         $order = (new static)::find($id);
         $order->discount = $discount;
         $order->save();
+
+        event(new OrdersActiveEvent($order->id));
     }
 
-    public static function updatePercentageDetailOrder($id, $percentage)
+    public static function updatePercentageDetailOrder($id, $percentage, $all = "")
     {
 
         $orderDetail = OrderDetail::where("order_id",$id)->get();
@@ -169,25 +189,35 @@ class Order extends Model
             if($detail['date_pay']==null && $detail['status']>0)
             {
                 $product = OrderDetail::find($detail['id']);
-                if($product->percentage < $percentage)
+
+                if($all != "delete")
+                {
+                    if($product->percentage < $percentage)
+                    {
+                        $product->percentage = $percentage;
+                    }
+                }
+                else
                 {
                     $product->percentage = $percentage;
                 }
                 
+                
                 $product->save();
             }
-            
         }
+        event(new OrdersActiveEvent($id));
     }
 
     public static function deleteDiscountPermanent($id)
     {
         self::updateDiscountOrder($id,0);
+        event(new OrdersActiveEvent($id));
     }
 
     public static function deleteDiscountPercentage($id)
     {
-        self::updatePercentageDetailOrder($id, 0);
+        self::updatePercentageDetailOrder($id, 0, "delete");
     }
 
     public function deleteDiscountProduct($id)
@@ -195,6 +225,7 @@ class Order extends Model
         $detail = OrderDetail::find($id['product']);
         $detail->percentage = 0;
         $detail->save();
+        event(new OrdersActiveEvent($detail->order_id));
     }
 
     public function addDiscountProduct($data)
@@ -202,6 +233,7 @@ class Order extends Model
         $detail = OrderDetail::find($data['product']);
         $detail->percentage =$data['discount'];
         $detail->save();
+        event(new OrdersActiveEvent($detail->order_id));
     }
 
     public static function closeOrder($data)
@@ -271,8 +303,13 @@ class Order extends Model
         $order->table_id=$data["newTable"];
         $order->save();
         $table = Table::where('id',$data["newTable"])->first();
+
+        event(new CloseTableEvent($data["oldTable"],$order->id));
+        event(new TableEvent($table->id,$table->number,$order->id));
         
         return $table->number;
+
+       
 
     }
      

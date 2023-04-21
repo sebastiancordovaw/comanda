@@ -5,7 +5,7 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Facades\DB;
-
+use App\Events\OrdersActiveEvent;
 class OrderDetail extends Model
 {
     use HasFactory;
@@ -38,15 +38,19 @@ class OrderDetail extends Model
                 "note"=>(isset($valor['note']))?$valor['note']:null,
             ]);
         }
+
+        event(new OrdersActiveEvent($id));
     }
 
     public static function updateProductCheck($data)
     {
         $current = DB::raw('CURRENT_TIMESTAMP');
         $products_value = 0;
+        $order_id = 0;
         foreach($data["ids"] as $valor)
         {
             $orderDetail = OrderDetail::where("id",$valor)->first();
+            $order_id = $orderDetail->order_id;
             if($orderDetail->percentage)
             {
                 $products_value += ($orderDetail->amount - ( $orderDetail->amount * $orderDetail->percentage / 100)) * 0.1;
@@ -79,6 +83,8 @@ class OrderDetail extends Model
             }
             $orderDetail->save();
         }
+
+        event(new OrdersActiveEvent($order_id));
         return true;
     }
 

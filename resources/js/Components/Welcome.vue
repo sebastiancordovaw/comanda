@@ -15,7 +15,7 @@
 <script>
 import FormTable from '@/Custom/FormTable.vue';
 import ChangeTable from '@/Custom/ChangeTable.vue';
-import { onMounted, onUpdated } from 'vue'
+import { onMounted, onUpdated } from 'vue';
 import { useStore } from 'vuex';
 export default {
     data(){
@@ -27,8 +27,85 @@ export default {
     {
         const store = useStore();
         onMounted(()=>{
-            store.dispatch('getTables')
+            //store.dispatch('getTables')
+
+            const pusher = new Pusher('97f3f1688080565b48cf', {
+                cluster: 'us2'
+            });
+            getTables(pusher);
+            eventOrders(pusher);
         });
+
+        const getTables = async(pusher) =>  
+        {
+            
+            try{
+                await axios.post('/get-tables')
+                .then(response=>{
+                    store.state.tables = response.data;
+                    for(let i = 0 ; i < store.state.tables.length; i++){
+                        
+                        pusher.subscribe('public-table-'+store.state.tables[i]['id'])
+                        .bind('table-'+store.state.tables[i]['id'], function(data) {
+                            document.getElementById("table_"+store.state.tables[i].id).classList.add("open");
+                            if(store.state.tables[i].id == store.state.tableActivate)
+                            {
+                                store.state.tableActivateNumber = data.number;
+
+                                pusher.subscribe('public-order-'+data.order)
+                                .bind('order-'+data.order, function(data2) {
+                                    if(data2.order == store.state.orderActivate) 
+                                    {
+                                        store.dispatch('getOrder');
+                                    }
+                                });
+                                
+                                store.dispatch('getOrder');
+                            }
+                            store.dispatch('getTables');
+                        });
+
+                        pusher.subscribe('public-close-table-'+store.state.tables[i]['id'])
+                        .bind('close-table-'+store.state.tables[i]['id'], function(data) {
+                            document.getElementById("table_"+store.state.tables[i].id).classList.remove("open");
+                            if(store.state.tables[i].id == store.state.tableActivate)
+                            {
+                                pusher.unsubscribe('public-order-'+data.order)
+                                .unbind('order-'+data.order);
+                                store.dispatch("clearFixAction");
+                            }
+                        });
+                    }
+                   
+                });  
+            }
+            catch(error)
+            {
+                console.log(error);
+            }
+        }
+
+        const eventOrders = async (pusher) => 
+        {
+            await axios.post('/get-orders-actives')
+            .then(response=>
+            {
+                let orders= response.data;
+                
+                for(let i = 0; i < orders.length; i++)
+                {
+                    store.state.orders.push(orders[i].id);
+                    pusher.subscribe('public-order-'+orders[i].id)
+                    .bind('order-'+orders[i].id, function(data) {
+                        console.log(data.order ,store.state.orderActivate);
+                        if(data.order == store.state.orderActivate) 
+                        {
+                            store.dispatch('getOrder');
+                        }
+                    });
+                }
+            });  
+        }
 
         const selectTable = table =>{
             
@@ -46,7 +123,9 @@ export default {
             store.state.showDiscount = false;
 
         }
-        onUpdated(()=>{
+
+        onUpdated(()=>
+        {
 
             if(document.getElementById("table_"+localStorage.getItem("table"))!=null)
             {

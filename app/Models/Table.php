@@ -4,7 +4,8 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
-
+use App\Events\TableEvent;
+use App\Events\CloseTableEvent;
 class Table extends Model
 {
     use HasFactory;
@@ -21,10 +22,21 @@ class Table extends Model
     public function openTable($id)
     {
         $table = (new static)::find($id);
+
+        $order = Order::select('orders.id')
+        ->where('orders.table_id',$table->id) 
+        ->where('orders.status',1)
+        ->join('order_details', function($join) 
+        {
+            $join->on('order_details.order_id', '=', 'orders.id');
+        })
+        ->first();
+
         if($table->status==0)
         {
             $table->status = 1;
             $table->save();
+            event(new TableEvent($table->id,$table->number,$order->id));
         }
         
     }
@@ -32,8 +44,19 @@ class Table extends Model
     public function closeTable($id)
     {
         $table = (new static)::find($id);
+
+        $order = Order::select('orders.id')
+        ->where('orders.table_id',$table->id) 
+        ->where('orders.status',1)
+        ->join('order_details', function($join) 
+        {
+            $join->on('order_details.order_id', '=', 'orders.id');
+        })
+        ->first();
+
         if($table->status==1)
         {
+            event(new CloseTableEvent($table->id,$order->id));
             $table->status = 0;
             $table->save();
         }
@@ -53,7 +76,7 @@ class Table extends Model
             {
                 $tableOld->status = 0;
                 $tableOld->save();
-            }
+            }            
             return true;
         }
         return false;
