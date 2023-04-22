@@ -347,7 +347,6 @@ const store = createStore({
             try{
                 await axios.post('/get-tables')
                 .then(response=>{
-                    console.log(response.data);
                     commit('setTables',response.data);
                 });  
             }

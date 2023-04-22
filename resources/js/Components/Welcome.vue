@@ -51,7 +51,6 @@ export default {
                             if(store.state.tables[i].id == store.state.tableActivate)
                             {
                                 store.state.tableActivateNumber = data.number;
-
                                 pusher.subscribe('public-order-'+data.order)
                                 .bind('order-'+data.order, function(data2) {
                                     if(data2.order == store.state.orderActivate) 
@@ -63,6 +62,7 @@ export default {
                                 store.dispatch('getOrder');
                             }
                             store.dispatch('getTables');
+                            
                         });
 
                         pusher.subscribe('public-close-table-'+store.state.tables[i]['id'])
@@ -70,9 +70,9 @@ export default {
                             document.getElementById("table_"+store.state.tables[i].id).classList.remove("open");
                             if(store.state.tables[i].id == store.state.tableActivate)
                             {
+                                store.dispatch("clearFixAction");
                                 pusher.unsubscribe('public-order-'+data.order)
                                 .unbind('order-'+data.order);
-                                store.dispatch("clearFixAction");
                             }
                         });
                     }
@@ -126,9 +126,13 @@ export default {
 
         onUpdated(()=>
         {
-
             if(document.getElementById("table_"+localStorage.getItem("table"))!=null)
             {
+                for(let i = 0; i< document.getElementsByClassName("tables").length; i++)
+                {
+                    document.getElementsByClassName("tables")[i].classList.remove("selectTable");
+                }
+
                 document.getElementById("table_"+localStorage.getItem("table")).classList.add("selectTable");
             }
             
