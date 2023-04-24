@@ -17,6 +17,8 @@ return new class extends Migration
             $table->id();
             $table->foreignId('order_id')->constrained();
             $table->foreignId('product_id')->constrained();
+            $table->index('order_id');
+            $table->index('product_id');
             $table->integer('count');
             $table->double('amount', 8, 2);
             $table->text('note')->nullable();

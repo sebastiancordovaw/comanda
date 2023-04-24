@@ -3,7 +3,7 @@
     <div class="grid grid-cols-4 gap-4">
         
         <div  class="col-span-2 p-5" >
-            <button v-show = "$store.state.tables.length"  v-for="(table, i ) in $store.state.tables" :key="i"  :class="table.status == 1 ?'open':''"  :id="'table_'+table.id"   @click = "selectTable(table)" class="w-24 h-24 float-left text-center bg-green-500 hover:bg-green-400 rounded-md mr-4 text-3xl text-white border-2 border-green-700 tables">{{table.number}}</button>
+            <button v-show = "$store.state.tables.length"  v-for="(table, i ) in $store.state.tables" :key="i"  :class="table.status == 1 ?'open':''"  :id="'table_'+table.id"   @click = "selectTable(table)" class="float-left w-24 h-24 mr-4 text-3xl text-center text-white bg-green-500 border-2 border-green-700 rounded-md hover:bg-green-400 tables">{{table.number}}</button>
         </div>
         <div class="col-span-2">
             <change-table></change-table>
@@ -50,17 +50,17 @@ export default {
                             document.getElementById("table_"+store.state.tables[i].id).classList.add("open");
                             if(store.state.tables[i].id == store.state.tableActivate)
                             {
-                                store.state.tableActivateNumber = data.number;
-                                pusher.subscribe('public-order-'+data.order)
-                                .bind('order-'+data.order, function(data2) {
-                                    if(data2.order == store.state.orderActivate) 
-                                    {
-                                        store.dispatch('getOrder');
-                                    }
-                                });
-                                
                                 store.dispatch('getOrder');
                             }
+                            store.state.tableActivateNumber = data.number;
+                            pusher.subscribe('public-order-'+data.order)
+                            .bind('order-'+data.order, function(data2) {
+                                if(data2.order == store.state.orderActivate) 
+                                {
+                                    store.dispatch('getOrder');
+                                }
+                            });
+                            
                             store.dispatch('getTables');
                             
                         });
@@ -71,9 +71,9 @@ export default {
                             if(store.state.tables[i].id == store.state.tableActivate)
                             {
                                 store.dispatch("clearFixAction");
-                                pusher.unsubscribe('public-order-'+data.order)
-                                .unbind('order-'+data.order);
                             }
+                             pusher.unsubscribe('public-order-'+data.order)
+                            .unbind('order-'+data.order);
                         });
                     }
                    
@@ -133,9 +133,9 @@ export default {
                     document.getElementsByClassName("tables")[i].classList.remove("selectTable");
                 }
 
+                console.log(localStorage.getItem("table"));
                 document.getElementById("table_"+localStorage.getItem("table")).classList.add("selectTable");
             }
-            
         })
         
 
