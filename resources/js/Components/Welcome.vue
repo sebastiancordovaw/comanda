@@ -1,12 +1,19 @@
 
 <template>
-    <div class="grid grid-cols-4 gap-4">
-        
-        <div  class="col-span-2 p-5" >
-            <button v-show = "$store.state.tables.length"  v-for="(table, i ) in $store.state.tables" :key="i"  :class="table.status == 1 ?'open':''"  :id="'table_'+table.id"   @click = "selectTable(table)" class="float-left w-24 h-24 mr-4 text-3xl text-center text-white bg-green-500 border-2 border-green-700 rounded-md hover:bg-green-400 tables">{{table.number}}</button>
+
+    <div class="grid grid-cols-12">
+        <div  class="col-span-12" >
+            <ul class="relative pt-3 pl-3 bg-gray-800 rooms-movil hidden">
+                <li  @click="zone(i)" :class="i" class="float-left p-3 py-3 mr-2 text-white bg-gray-600 cursor-pointer rounded-t-md space hover:bg-gray-500"  v-for="(table, i ) in $store.state.tables" :key="i">{{ i }} <span :class="'total_tables_'+i">0</span></li>
+                <div class="clear-both"></div>
+            </ul>
         </div>
-        <div class="col-span-2">
-            <change-table></change-table>
+    </div>
+    <div class="grid grid-cols-12 lg:grid-cols-7">
+        <div  class="col-span-2 lg:col-span-3 " >
+            <tables></tables>
+        </div>
+        <div class="col-span-10 lg:col-span-4">
             <form-table></form-table>
         </div>
     </div>
@@ -14,7 +21,7 @@
 
 <script>
 import FormTable from '@/Custom/FormTable.vue';
-import ChangeTable from '@/Custom/ChangeTable.vue';
+import Tables from '@/Custom/Tables.vue';
 import { onMounted, onUpdated } from 'vue';
 import { useStore } from 'vuex';
 export default {
@@ -27,124 +34,38 @@ export default {
     {
         const store = useStore();
         onMounted(()=>{
-            //store.dispatch('getTables')
-
-            const pusher = new Pusher('97f3f1688080565b48cf', {
-                cluster: 'us2'
-            });
-            getTables(pusher);
-            eventOrders(pusher);
         });
-
-        const getTables = async(pusher) =>  
-        {
-            
-            try{
-                await axios.post('/get-tables')
-                .then(response=>{
-                    store.state.tables = response.data;
-                    for(let i = 0 ; i < store.state.tables.length; i++){
-                        
-                        pusher.subscribe('public-table-'+store.state.tables[i]['id'])
-                        .bind('table-'+store.state.tables[i]['id'], function(data) {
-                            document.getElementById("table_"+store.state.tables[i].id).classList.add("open");
-                            if(store.state.tables[i].id == store.state.tableActivate)
-                            {
-                                store.dispatch('getOrder');
-                            }
-                            store.state.tableActivateNumber = data.number;
-                            pusher.subscribe('public-order-'+data.order)
-                            .bind('order-'+data.order, function(data2) {
-                                if(data2.order == store.state.orderActivate) 
-                                {
-                                    store.dispatch('getOrder');
-                                }
-                            });
-                            
-                            store.dispatch('getTables');
-                            
-                        });
-
-                        pusher.subscribe('public-close-table-'+store.state.tables[i]['id'])
-                        .bind('close-table-'+store.state.tables[i]['id'], function(data) {
-                            document.getElementById("table_"+store.state.tables[i].id).classList.remove("open");
-                            if(store.state.tables[i].id == store.state.tableActivate)
-                            {
-                                store.dispatch("clearFixAction");
-                            }
-                             pusher.unsubscribe('public-order-'+data.order)
-                            .unbind('order-'+data.order);
-                        });
-                    }
-                   
-                });  
-            }
-            catch(error)
-            {
-                console.log(error);
-            }
-        }
-
-        const eventOrders = async (pusher) => 
-        {
-            await axios.post('/get-orders-actives')
-            .then(response=>
-            {
-                let orders= response.data;
-                
-                for(let i = 0; i < orders.length; i++)
-                {
-                    store.state.orders.push(orders[i].id);
-                    pusher.subscribe('public-order-'+orders[i].id)
-                    .bind('order-'+orders[i].id, function(data) {
-                        console.log(data.order ,store.state.orderActivate);
-                        if(data.order == store.state.orderActivate) 
-                        {
-                            store.dispatch('getOrder');
-                        }
-                    });
-                }
-            });  
-        }
-
-        const selectTable = table =>{
-            
-            for(let i = 0; i<document.getElementsByClassName("tables").length; i++){
-                document.getElementsByClassName("tables")[i].classList.remove("selectTable")
-            }
-            
-            document.getElementById("table_"+table.id).classList.add("selectTable");
-            
-            store.dispatch('setActive', table);
-            store.dispatch('getOrder');
-
-            store.state.discount          =0;
-            store.state.porcentage        =0;
-            store.state.showDiscount = false;
-
-        }
 
         onUpdated(()=>
         {
-            if(document.getElementById("table_"+localStorage.getItem("table"))!=null)
+        })
+
+        const zone =(zoneClick)=>{
+            
+            if(store.state.zoneActive != zoneClick)
             {
-                for(let i = 0; i< document.getElementsByClassName("tables").length; i++)
+                for(let i =0; i < document.getElementsByClassName("zones").length; i++)
                 {
-                    document.getElementsByClassName("tables")[i].classList.remove("selectTable");
+                    document.getElementsByClassName("zones")[i].classList.remove("display");
                 }
 
-                console.log(localStorage.getItem("table"));
-                document.getElementById("table_"+localStorage.getItem("table")).classList.add("selectTable");
-            }
-        })
-        
+                for(let i =0; i < document.getElementsByClassName('space').length; i++)
+                {
+                    document.getElementsByClassName('space')[i].classList.remove('active');
+                }
+                document.getElementsByClassName(zoneClick)[0].classList.add('active');
+                document.getElementById(zoneClick).classList.add("display");
 
-        return {selectTable}
+                localStorage.setItem("zone",zoneClick);
+                store.state.zoneActive = localStorage.getItem("zone");
+            }
+        }
+        return {zone}
     }
     ,
     components:{
         FormTable,
-        ChangeTable
+        Tables
     },
     methods:{
         
@@ -157,14 +78,14 @@ export default {
 </script>
 <style>
 .selectTable{
-    -webkit-box-shadow: 0px 0px 23px 8px rgba(245,202,10,1);
--moz-box-shadow: 0px 0px 23px 8px rgba(245,202,10,1);
-box-shadow: 0px 0px 23px 8px rgba(245,202,10,1);
+-webkit-box-shadow: 0px 0px 11px 4px rgba(245,202,10,1);
+-moz-box-shadow: 0px 0px 11px 4px rgba(245,202,10,1);
+box-shadow: 0px 0px 11px 4px rgba(245,202,10,1);
 }
 .selectTable:hover{
-    -webkit-box-shadow: 0px 0px 23px 8px rgba(245,202,10,1);
--moz-box-shadow: 0px 0px 23px 8px rgba(245,202,10,1);
-box-shadow: 0px 0px 23px 8px rgba(245,202,10,1);
+    -webkit-box-shadow: 0px 0px 11px 4px rgba(245,202,10,1);
+-moz-box-shadow: 0px 0px 11px 4px rgba(245,202,10,1);
+box-shadow: 0px 0px 11px 4px rgba(245,202,10,1);
 }
 .open{
 background-color: #e74c3c;
@@ -174,4 +95,51 @@ border-color: #c0392b;
 .open:hover{
 background-color: #ff7979;
 }
+
+.tables>div{
+    border-bottom: solid;
+    border-color:#27ae60;
+    width: 100%;
+    height: 100%;
+    padding: 19px 0px 0px 0px;
+    cursor:pointer;
+}
+
+.tables.open>div{
+    border-color:#c0392b;
+}
+
+button[role='tab']
+{
+    border: 0px;
+    border-radius: 3px  3px 0px 0px;
+
+}
+@media (max-width: 1023px) {
+    .tables>div
+    {
+        padding: 4px 0px 0px 0px;
+
+        font-size:18px;
+    }
+    .rooms-movil
+    {
+        display:block !important;
+    }
+}
+
+.space.active{
+    background-color: #BDC3C7;
+    color: #2C3E50;
+    font-weight: bold;
+}
+.openTables{
+    border:solid 1px;
+    border-color:#c0392b;
+    color:#c0392b;
+    padding:2px 5px;
+    border-radius: 2px;
+}
+
+
 </style>

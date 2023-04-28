@@ -1,5 +1,6 @@
 import './bootstrap';
 import '../css/app.css';
+import '../css/plantilla.css';
 
 import { createApp, h } from 'vue';
 import { createInertiaApp } from '@inertiajs/vue3';
@@ -17,6 +18,7 @@ createInertiaApp({
         return createApp({ render: () => h(App, props) })
             .use(plugin)
             .use(store)
+            //.use(router)
             .use(VueSweetalert2)
             .use(ZiggyVue, Ziggy)
             .mount(el);

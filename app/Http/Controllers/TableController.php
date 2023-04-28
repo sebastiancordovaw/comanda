@@ -4,8 +4,10 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use App\Models\Table;
+use App\Models\Zone;
 use App\Models\Order;
 use App\Models\OrderDetail;
+
 
 
 class TableController extends Controller
@@ -23,7 +25,13 @@ class TableController extends Controller
     }
 
     public function getTables(Request $resource){
-        return Table::all();
+        $tables = [];
+        $zones = Zone::all();
+        foreach($zones as $k =>$v)
+        {
+            $tables[$v->name]['tables'] = $v->tables;
+        }
+        return $tables;
     }
 
     public function changeTable(Request $data){

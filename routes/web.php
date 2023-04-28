@@ -27,10 +27,9 @@ Route::middleware([
     config('jetstream.auth_session'),
     'verified',
 ])->group(function () {
-    Route::get('/dashboard', function () {
-        return Inertia::render('Dashboard');
-    })->name('dashboard');
-
+    Route::get('/dashboard', function () {return Inertia::render('Dashboard');})->name('dashboard');
+    Route::get('/tables', function () {return Inertia::render('Tables');})->name('tables');
+    
 
     Route::post('/get-products', [ProductController::class,'getProducts'])->name('get-products');
     Route::post('/get-tables', [TableController::class,'getTables'])->name('get-tables');
@@ -50,7 +49,7 @@ Route::middleware([
     Route::post('/change-table', [TableController::class,'changeTable'])->name('change-table');
     Route::post('/get-orders-actives', [OrderController::class,'getOrdersActives'])->name('get-orders-actives');
 
-    
+    // php artisan serve --host 192.168.0.6
     
     
 

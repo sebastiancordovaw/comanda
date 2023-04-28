@@ -13,9 +13,9 @@
                     <template  v-for="(product) in $store.state.products" :key ="product.id">
                         <div v-if ="product.status>0" class="grid grid-cols-12 border-l-2 border-orange-600" style="margin: 2px 0 0 0;" :class="(product.date_pay!=null)?'pay':''" :tip="(product.date_pay!=null)?product.tip:''">
                             <div class="col-span-2 text-left p-2">{{ product.count }} </div>
-                            <div class="col-span-5 p-2"><b>{{ product.name }} </b></div>
+                            <div class="col-span-4 p-2"><b>{{ product.name }} </b></div>
                             <div class="col-span-2 text-center py-2 px-6"><b v-if="product.percentage>0" class="text-red-600">{{ product.percentage }}%</b> </div>
-                            <div class="text-center p-2 col-span-3 text-right"><span :class="(product.percentage)?'line-through text-gray-600':''"> $ {{ product.amount }}</span> <span class="text-red-600 font-bold" v-if="product.percentage">$ {{ product.amount - (product.amount * product.percentage / 100)}}</span></div>
+                            <div class="text-center p-2 col-span-3 text-right text-xs"><span :class="(product.percentage)?'line-through text-gray-600':''"> $ {{ product.amount }}</span> <br/> <span class="text-red-600 font-bold text-sm" v-if="product.percentage">$ {{ product.amount - (product.amount * product.percentage / 100)}}</span></div>
                         
                         </div>
                     </template> 
@@ -88,6 +88,7 @@ export default {
         
         const closeOrder = ()=>{
             emit('show');
+            store.state.loadData = true;
             store.dispatch("closeOrderAction",tip.value)
         }
 

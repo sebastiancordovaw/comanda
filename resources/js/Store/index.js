@@ -6,6 +6,7 @@ const store = createStore({
 
     state:{
         productsSearch  : [],
+        zoneActive       : '',
         tableActivate   : 0,
         orderActivate   : 0,
         orders          : [],
@@ -23,11 +24,13 @@ const store = createStore({
         discount_active   :0,
         discount_active_percentage :0,
         amount_free:0,
+        loadData:false
     },
     mutations:{
         clearFix(state)
         {
             state.productsSearch  = [];
+            state.zoneActive       = '',
             //state.tableActivate   = 0;
             state.orderActivate   = 0;
             state.tableActivateNumber = 0;
@@ -44,10 +47,12 @@ const store = createStore({
             state.discount_active_percentage =0;
             state.amount_free=0;
 
-
+            //localStorage.setItem("zone",'');
             localStorage.setItem("table",null);
             localStorage.setItem("cart1",{});
             localStorage.setItem("tableNumber",0);
+            
+            state.loadData=false;
         },
         setTables(state, payload)
         {
@@ -104,6 +109,7 @@ const store = createStore({
         async getOrderCommit(state)
         {
             /****LLAMADA A LOS DATOS DE ORDEN */
+            store.state.loadData = true;
             await axios.post('/get-order',{table:state.tableActivate})
             .then(responseOrder=>{
 
@@ -115,6 +121,7 @@ const store = createStore({
                 .then(responseDetail=>{
                     state.products = responseDetail.data;
                     store.commit('calculateAmountCommit');
+                    store.state.loadData = false;
                 }) 
 
             });
@@ -204,12 +211,14 @@ const store = createStore({
         async deleteProductOrderCommit(state,payload){
             await axios.post('/delete-order-table',{order_detail:payload.id})
             .then(response=>{
+                state.loadData = false;
                 store.commit('getOrderCommit');
             });
         },
         async deleteProductOrderPaidCommit(state,payload){
             await axios.post('/delete-order-paid-table',{order_detail:payload.id})
             .then(response=>{
+                state.loadData = false;
                 store.commit('getOrderCommit');
             });
         },
@@ -223,6 +232,7 @@ const store = createStore({
            
             await axios.post('/apply-discount',{'percentage':state.porcentage,'discount':state.discount,'table':state.tableActivate})
             .then(response=>{
+                state.loadData = false;
                 store.commit('getOrderCommit');
             });
 
@@ -230,6 +240,7 @@ const store = createStore({
         async cancelDiscountCommit(state)
         {
             state.showDiscount = false;
+            state.loadData = false;
         },
 
         async closeOrderCommit(state,payload){
@@ -238,6 +249,7 @@ const store = createStore({
                 for(let i = 0; i< state.tables.length; i++){
                     if(state.tableActivate ==  state.tables[i].id)
                     {
+                        state.loadData = false;
                         state.tables[i].status = 0
                     }
                 }
@@ -248,6 +260,7 @@ const store = createStore({
          async closeOrderCheckCommit(state, payload){
             await axios.post('/close-order-check',{'ids':payload.ids,'tip':payload.tip})
             .then(response=>{
+                state.loadData = false;
                 store.commit('getOrderCommit');
             })
          },
@@ -258,6 +271,7 @@ const store = createStore({
                 for(let i = 0; i< state.tables.length; i++){
                     if(state.tableActivate ==  state.tables[i].id)
                     {
+                        state.loadData = false;
                         state.tables[i].status = 0
                     }
                 }
@@ -295,7 +309,7 @@ const store = createStore({
             await axios.post('/delete-discount-permanent',{'order':parseInt(state.orderActivate)})
             .then(response=>{
 
-                //store.commit('getOrderCommit');
+                state.loadData = false;
                
             });
          },
@@ -304,11 +318,13 @@ const store = createStore({
             await axios.post('/delete-discount-percentage',{'order':parseInt(state.orderActivate)})
             .then(response=>{
                 store.commit('getOrderCommit');
+                state.loadData = false;
             });
          },
          async delDiscountProductCommit(state, payload){
             await axios.post('/delete-discount-product',{'product':parseInt(payload)})
             .then(response=>{
+                state.loadData = false;
                 store.commit('getOrderCommit');
             });
          },
@@ -316,6 +332,7 @@ const store = createStore({
          {
             await axios.post('/add-discount-product',{'product':payload.product.id,'discount':payload.discount})
             .then(response=>{
+                state.loadData = false;
                 store.commit('getOrderCommit');
             })
          }

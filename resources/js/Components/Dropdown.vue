@@ -58,21 +58,21 @@ const alignmentClasses = computed(() => {
         <div v-show="open" class="fixed inset-0 z-40" @click="open = false" />
 
         <transition
-            enter-active-class="transition ease-out duration-200"
-            enter-from-class="transform opacity-0 scale-95"
-            enter-to-class="transform opacity-100 scale-100"
-            leave-active-class="transition ease-in duration-75"
-            leave-from-class="transform opacity-100 scale-100"
-            leave-to-class="transform opacity-0 scale-95"
+            enter-active-class="transition duration-200 ease-out"
+            enter-from-class="transform scale-95 opacity-0"
+            enter-to-class="transform scale-100 opacity-100"
+            leave-active-class="transition duration-75 ease-in"
+            leave-from-class="transform scale-100 opacity-100"
+            leave-to-class="transform scale-95 opacity-0"
         >
             <div
                 v-show="open"
-                class="absolute z-50 mt-2 rounded-md shadow-lg"
+                class="absolute z-50 mt-1 rounded-md shadow-lg"
                 :class="[widthClass, alignmentClasses]"
                 style="display: none;"
                 @click="open = false"
             >
-                <div v-show = "$store.state.productsSearch.length" class="bg-white ring-transparent border-orange-400  rounded-sm ring-1 border-t border-b border-r border-l border-gray-300 ring-opacity-5 p-0" :class="contentClasses">
+                <div class="p-0 bg-white border-t border-b border-l border-r border-gray-300 border-orange-400 rounded-sm ring-transparent ring-1 ring-opacity-5" :class="contentClasses">
                     <slot name="content" />
                 </div>
             </div>

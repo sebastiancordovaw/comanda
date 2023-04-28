@@ -6,8 +6,8 @@
         <div class="col-span-5 pt-1 px-2"><p class="text-lg">{{ product.name }} </p><p><small class="text-sm">{{ product.note }}</small></p> </div>
         <div class="col-span-2 gap-2">
             <div class="grid grid-cols-12">
-            <div class="col-span-1 pt-1">$</div>
-            <div class="col-span-11 px-2"><input v-model.number="$store.state.cart1[$store.state.tableActivate][product.id].total_amount" class="text-center w-full shadow-none outline-0 focus:ring-transparent border-orange-400 focus:border-orange-400  border-t border-b border-r border-l border-gray-300 p-1" type="text"/></div>
+            <div class="col-span-2 pt-1">$</div>
+            <div class="col-span-10 pt-1"><input v-model.number="$store.state.cart1[$store.state.tableActivate][product.id].total_amount" class="text-center shadow-none outline-0 focus:ring-transparent border-orange-400 focus:border-orange-400  border-t border-b border-r border-l border-gray-300  text-xs lg:text-sm p-1 w-10 lg:w-full" type="text"/></div>
         </div>
 
         </div>
@@ -23,8 +23,8 @@
     </div>
     <div v-show="total>0" class="p-2 bg-gray-600 text-white mt-1">Total a confirmar ${{ total }}</div>
     <div v-show="total>0" class="mt-2">
-        <button @click = "cancelCart1" class="p-1 rounded-sm bg-gray-200 hover:bg-gray-300 mr-4 p-2  border-t border-b border-l border-r border-gray-700 text-gray-800 ">Cancelar</button>
-        <button @click = "confirmCart1" class="p-1 rounded-sm bg-orange-200 hover:bg-orange-300 mr-4 p-2  border-t border-b border-l border-r border-orange-700 text-orange-800 ">Confirmar</button>
+        <button @click = "cancelCart1" class="rounded-sm bg-gray-200 hover:bg-gray-300 mr-4 p-2  border-t border-b border-l border-r border-gray-700 text-gray-800 ">Cancelar</button>
+        <button @click = "confirmCart1" class="rounded-sm bg-orange-200 hover:bg-orange-300 mr-4 p-2  border-t border-b border-l border-r border-orange-700 text-orange-800 ">Confirmar</button>
     </div>
 
     <detail-order></detail-order>
