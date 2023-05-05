@@ -15,7 +15,7 @@ return new class extends Migration
     {
         Schema::create('tables', function (Blueprint $table) {
             $table->id();
-            $table->integer('number');
+            $table->integer('number')->unique();
             $table->boolean('status')->default(0);
             $table->foreignId('zone_id')->constrained();
             $table->timestamps();

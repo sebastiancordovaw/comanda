@@ -7,6 +7,7 @@ use App\Models\Table;
 use App\Models\Zone;
 use App\Models\Order;
 use App\Models\OrderDetail;
+use Illuminate\Support\Facades\Validator;
 
 
 
@@ -22,6 +23,48 @@ class TableController extends Controller
         $this->table = $table;
         $this->order = $order;
         $this->orderDetail = $orderDetail;
+    }
+
+    public function insert(Request $request){
+        $validator = Validator::make($request->all(), [
+            "number" => "required|unique:tables",
+        ]);
+
+        if ($validator->fails()) {
+            return response()->json([
+                'errors' =>$validator->errors(),
+            ], 422);
+        }
+
+        $this->table->insert($request);
+    }
+
+    public function update(Request $request){
+        $validator = Validator::make($request->all(), [
+            "number" => "required|unique:tables,number,".$request->input("id"),
+        ]);
+
+        if ($validator->fails()) {
+            return response()->json([
+                'errors' =>$validator->errors(),
+            ], 422);
+        }
+        $this->table->updatet($request);
+    }
+
+    public function delete(Request $request){
+
+        $response = $this->order->getDetail($request->input("id"),"orders.table_id");
+        if($response[0]["status"])
+        {
+            return response()->json([
+                'errors' =>["table"=>["Esta mesa se encuenta abierta"]],
+            ], 422);
+        }
+        else{
+            $this->table->deletet($request);
+        }
+
     }
 
     public function getTables(Request $resource){

@@ -21,7 +21,7 @@ class OrderController extends Controller
     }
 
     public function setOrderDetail(Request $request){
-       
+
         $dataOrder = $request->request->all();
         try{
             DB::beginTransaction();
@@ -36,25 +36,25 @@ class OrderController extends Controller
             DB::rollback();
             return response()->json($e->getMessage(),500);
         }
-        
+
     }
 
     public function getOrder(Request $id){
-        
+
         $detail =  $this->order->getOrder($id["table"],'table_id');
         return $detail;
     }
 
-    
+
     public function getOrdersActives(){
-        
+
         $orders =  $this->order->getOrdersActives();
         return $orders;
     }
 
 
     public function getOrderDetail(Request $id){
-        
+
         $detail =  $this->order->getDetail($id["table"],"orders.table_id");
         return $detail;
     }
@@ -96,7 +96,7 @@ class OrderController extends Controller
     }
 
     public function CloseOrderCheck(Request $data){
-        
+
         $this->orderDetail->updateProductCheck($data);
         $detail =  $this->order->getDetail($data["table"],"orders.table_id");
         return $detail;

@@ -8,12 +8,12 @@
             <Dropdown align="down" width="100%" :contentClasses="['py-0']">
                 <template #trigger>
                     <div class="relative mx-auto text-gray-600">
-                        <input placeholder="Buscar Producto..."  v-show="$store.state.tableActivateNumber>0" v-model="searchInput" type="text" @change="clearInput()" @keyup="searchProduct()" @keyup.enter="searchProduct()" name="" id="" class="w-full border-t border-b border-l border-r border-gray-400 focus:ring-transparent focus:border-orange-700">
+                        <input placeholder="Buscar Producto..."  v-show="$store.state.tableActivateNumber>0" v-model="searchInput" type="text" @change="clearInput()" @keyup="searchProduct()" @keyup.enter="searchProduct()" name="" id="" class="w-full border-t-0 border-b border-l-0 border-r-0 border-gray-400 focus:ring-transparent focus:border-orange-700">
                     </div>
                 </template>
 
                 <template #content>
-                    <a v-show = "$store.state.productsSearch.length" v-for="(search, i ) in $store.state.productsSearch" :key="i" href=""  class="text-left hover:bg-orange-300">
+                    <a v-show = "$store.state.productsSearch.length" v-for="(search, i ) in $store.state.productsSearch" :key="i" href=""  class="text-left hover:bg-yellow-300">
                         <div class="grid grid-cols-12 gap-4 px-2 py-2 hover:bg-orange-200" @click.prevent = "addCart1(search)">
                           <div class="col-span-9">{{ search.name }}</div>
                           <div class="col-span-3">{{ search.price }}</div>
@@ -44,7 +44,7 @@ export default {
     },setup()
     {
 
-        
+
         const store = useStore();
         const searchProduct = () =>{
             store.dispatch('getProducts',searchInput.value);
@@ -56,7 +56,7 @@ export default {
 
         const addCart1 = (product,input) =>{
             store.dispatch('addCart1Action',product);
-            
+
         }
 
         onMounted(() => {
@@ -68,7 +68,7 @@ export default {
             {
                 store.state.cart1 = JSON.parse(localStorage.getItem("cart1"));
             }
-            
+
             if(localStorage.getItem("table")!=null)
             {
                 store.state.tableActivate = localStorage.getItem("table");
@@ -78,7 +78,7 @@ export default {
             {
                 store.state.tableActivateNumber = localStorage.getItem("tableNumber");
             }
-            
+
         })
 
         return { searchProduct, addCart1, clearInput ,searchInput}
@@ -90,7 +90,7 @@ export default {
     },
     mounted()
     {
-       
+
     }
 }
 

@@ -1,16 +1,16 @@
 <template>
     <div v-show="$store.state.products.length" style="position: relative;">
         <template v-for="(product) in $store.state.products" :key  = "product.id">
-        <div v-if="product.date_pay==null" class="grid grid-cols-12 mt-1 bg-gray-100 border-l-4 border-orange-700 hover:bg-orange-300 product"  :id="product.id" :class ="product.status?'':'delete'" :paid = "(product.date_pay!=null)?true:false" :is_percentage = "(product.is_percentage)?true:false" :date_pay="product.date_pay">
+        <div v-if="product.date_pay==null" class="grid grid-cols-12 mt-1 bg-gray-100 border-l-4 border-yellow-400 hover:bg-yellow-200 product"  :id="product.id" :class ="product.status?'':'delete'" :paid = "(product.date_pay!=null)?true:false" :is_percentage = "(product.is_percentage)?true:false" :date_pay="product.date_pay">
             <div class="col-span-1 p-2 lg:col-span-2">{{ product.count }}</div>
             <div class="col-span-5 p-2"><b>{{ product.name }}</b><p><small class="text-sm">{{ product.note }}</small></p></div>
-            <div class="col-span-2 p-2 text-center text-red-600 " v-if="product.percentage==0"> 
+            <div class="col-span-2 p-2 text-center text-red-600 " v-if="product.percentage==0">
                 <svg v-if="product.status>0 && product.date_pay==null" xmlns="http://www.w3.org/2000/svg" @click="addDiscountProduct(product)" fill="none" style="margin:0 auto; position: relative; cursor: pointer;" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-6 h-6">
                     <path stroke-linecap="round" stroke-linejoin="round" d="M2.25 6L9 12.75l4.286-4.286a11.948 11.948 0 014.306 6.43l.776 2.898m0 0l3.182-5.511m-3.182 5.51l-5.511-3.181" />
                 </svg>
             </div>
-    
-            <div class="col-span-2 p-2 text-xs text-center text-red-600" v-if="product.percentage>0"><b>{{ product.percentage }} %</b> 
+
+            <div class="col-span-2 p-2 text-xs text-center text-red-600" v-if="product.percentage>0"><b>{{ product.percentage }} %</b>
                     <svg v-if="product.status>0 && product.date_pay==null" xmlns="http://www.w3.org/2000/svg" @click="delDiscountProduct(product.id)" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-6 h-6 cursor-pointer" style="margin: 0 auto;">
                     <path stroke-linecap="round" stroke-linejoin="round" d="M9.75 9.75l4.5 4.5m0-4.5l-4.5 4.5M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
                     </svg>
@@ -69,44 +69,44 @@
             </svg></div>
         </div>
 
-        
+
 
         <div class="grid grid-cols-12 mt-1 border-l-4 border-orange-700" v-if=" $store.state.showDiscount">
-            
+
             <div class="col-span-12 bg-yellow-200">
                 <div class="float-left col-span-6 p-2" > Descuento <input @keyup="applyDiscount" v-model.number = "$store.state.porcentage"  class="w-14 lg:w-28 focus:ring-transparent" type="text" name="" id=""> %</div>
                 <div class="float-right col-span-6 p-2">  <input @keyup="resetApplyDiscount" v-model.number="$store.state.discount" class="float-right w-20 lg:w-28 focus:ring-transparent" type="text" name="" id=""> <span class="float-right pt-2 mr-2">$</span></div>
                 <div class="clear-both"></div>
             </div>
-            <div class="col-span-12 p-4">
-                
-                <button v-if="$store.state.discount>0"  @click="saveDiscount" class="float-right p-1 p-2 text-orange-800 bg-orange-200 border-t border-b border-l border-r border-orange-700 rounded-sm hover:bg-orange-300 ">Aceptar</button>
-                <button @click="cancelDiscount"  class="float-right p-1 p-2 mr-2 text-gray-800 bg-gray-300 border-t border-b border-l border-r border-gray-600 rounded-sm hover:bg-gray-200">Cancelar</button>
-                
+            <div class="col-span-12 pl-4 pt-4 pb-4">
+
+                <button v-if="$store.state.discount>0"  @click="saveDiscount" class="float-right p-2 text-white bg-green-400 rounded-sm hover:bg-green-500 ">Aceptar</button>
+                <button @click="cancelDiscount"  class="float-right p-1 p-2 mr-2 text-white bg-gray-400 rounded-sm hover:bg-gray-500">Cancelar</button>
+
                 <div class="clear-both"></div>
             </div>
         </div>
-        
+
         <div class="px-6 py-3 text-right text-white bg-gray-600 rounded-b-lg">
             <button @click="showformDiscount" class="float-left px-2 text-black bg-gray-300 rounded-sm">%</button>
             <b>Total: $ {{ $store.state.total_amount_order }}</b>
         </div>
         <div class="load-content" v-show = "$store.state.loadData">
 
-            <span class="absolute  h-7 w-7" style="right: 50%; margin-right: -17px; top: 50%; margin-top: -32px;">
+            <span class="absolute h-7 w-7" style="right: 50%; margin-right: -17px; top: 50%; margin-top: -32px;">
                 <span class="absolute inline-flex w-full h-full bg-red-600 rounded-full opacity-75 animate-ping"></span>
                 <span class="relative inline-flex bg-red-600 rounded-full h-7 w-7"></span>
             </span>
 
-            <div class="rounded-b-lg load-opacity"></div> 
+            <div class="rounded-b-lg load-opacity"></div>
         </div>
     </div>
     <div v-show="$store.state.products.length>0" class="mt-2">
-        <button @click = "openModal" class="float-right p-2 text-orange-800 bg-orange-200 border-t border-b border-l border-r border-orange-700 rounded-sm hover:bg-orange-300 ">Cerrar Mesa</button>
+        <button @click = "openModal" class="float-right p-2 text-white bg-green-400 rounded-sm hover:bg-green-500 ">Cerrar Mesa</button>
         <div class="clear-both"></div>
     </div>
-    <modal-close-order  :show ="modalShowTable" @show="openModal()" ></modal-close-order>
-    <order-paid  :show ="modalPaid" @show="openModalPaid()" @showOrderPaid ="openModalPaid()"  ></order-paid >
+    <modal-close-order  :show ="modalShowTable" @show="openModal" ></modal-close-order>
+    <order-paid  :show ="modalPaid" @show="openModalPaid" @showOrderPaid ="openModalPaid"  ></order-paid >
 </template>
 
 <script>
@@ -116,7 +116,7 @@ import OrderPaid from '@/Custom/OrderPaid.vue'
 import Swal from 'sweetalert2';
 import { onMounted, onUpdated } from 'vue';
 export default {
-    
+
     data(){
         return{
             modalShowTable : false,
@@ -126,18 +126,18 @@ export default {
     setup() {
         const store = useStore();
 
-    
+
         const delProduct = product => {
             Swal.fire({
                         title: 'Seguro de eliminar?',
                         text: "¡Esta acción no se puede revertir!",
                         icon: 'info',
                         showCancelButton: true,
-                        confirmButtonColor: '#3085d6',
+                        confirmButtonColor: '#27ae60',
                         cancelButtonColor: '#d33',
                         confirmButtonText: 'Si, Eliminar'
                         }).then((result) => {
-                        if (result.isConfirmed) 
+                        if (result.isConfirmed)
                         {
                             store.state.loadData = true;
                             store.dispatch('deleteProductOrder', product);
@@ -163,13 +163,13 @@ export default {
                         text: text,
                         icon: 'warning',
                         showCancelButton: true,
-                        confirmButtonColor: '#3085d6',
+                        confirmButtonColor: '#27ae60',
                         cancelButtonColor: '#d33',
                         confirmButtonText: 'Si, Eliminar'
                         }).then((result) => {
                         if (result.isConfirmed) {
                             store.state.loadData = true;
-                            store.dispatch('deleteProductOrderPaid', product); 
+                            store.dispatch('deleteProductOrderPaid', product);
                         }
             })
         }
@@ -202,7 +202,7 @@ export default {
         }
 
         const addDiscountProduct = product =>{
-            
+
                 Swal.fire({
                 title: 'Agregar un Descuento',
                 input: 'text',
@@ -212,7 +212,7 @@ export default {
                 },
                 showCancelButton: true,
                 confirmButtonText: 'Aceptar',
-                confirmButtonColor: '#3085d6',
+                confirmButtonColor: '#27ae60',
                 cancelButtonColor: '#d33',
                 showLoaderOnConfirm: true,
                 preConfirm: (discount) => {
@@ -241,7 +241,7 @@ export default {
             this.$store.state.porcentage        =0;
             this.$store.state.showDiscount=!this.$store.state.showDiscount;
         },
-        
+
         applyDiscount(){
 
             /***** toma el valor total y le resta el valor del porcentaje *****/
@@ -253,23 +253,23 @@ export default {
         total()
         {
             this.$store.dispatch('calculateAmountAction');
-        }        
+        }
     },
     updated()
     {
        let products =  document.getElementsByClassName("product");
        for(let i = 0; i < products.length;  i++)
-       { 
+       {
             if(products[i].getAttribute('paid')!=='false' && !products[i].className.match(/\bdelete\b/))
             {
                 products[i].classList.add("paid");
-            } 
+            }
        }
     },
     computed:{
 
 
-        
+
     },
     components:{
         ModalCloseOrder,

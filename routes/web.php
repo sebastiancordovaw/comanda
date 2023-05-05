@@ -29,7 +29,7 @@ Route::middleware([
 ])->group(function () {
     Route::get('/dashboard', function () {return Inertia::render('Dashboard');})->name('dashboard');
     Route::get('/tables', function () {return Inertia::render('Tables');})->name('tables');
-    
+
 
     Route::post('/get-products', [ProductController::class,'getProducts'])->name('get-products');
     Route::post('/get-tables', [TableController::class,'getTables'])->name('get-tables');
@@ -48,9 +48,12 @@ Route::middleware([
     Route::post('/close-order-check-finally', [OrderController::class,'CloseOrderCheckFinally'])->name('close-order-check-finally');
     Route::post('/change-table', [TableController::class,'changeTable'])->name('change-table');
     Route::post('/get-orders-actives', [OrderController::class,'getOrdersActives'])->name('get-orders-actives');
+    Route::post('/insertTable', [TableController::class,'insert'])->name('insertTable');
+    Route::post('/updateTable', [TableController::class,'update'])->name('updateTable');
+    Route::post('/deleteTable', [TableController::class,'delete'])->name('deleteTable');
 
     // php artisan serve --host 192.168.0.6
-    
-    
+
+
 
 });

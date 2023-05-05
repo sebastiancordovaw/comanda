@@ -6,6 +6,7 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use App\Events\TableEvent;
 use App\Events\CloseTableEvent;
+
 class Table extends Model
 {
     use HasFactory;
@@ -19,14 +20,42 @@ class Table extends Model
         return $this->hasMany(Order::class, 'table_id', 'id');
     }
 
+    public function insert($data){
+        $table = (new static);
+        $salon = Zone::where("name",$data->input("salon"))->first();
+
+        $table->number = $data->input("number");
+        $table->zone_id = $salon->id;
+        $table->save();
+    }
+
+    public function updatet($data){
+        $table = (new static)::where("id",$data->input("id"))->first();
+        $salon = Zone::where("name",$data->input("salon"))->first();
+
+        $table->number = $data->input("number");
+        $table->zone_id = $salon->id;
+        $table->save();
+    }
+
+    public function deletet($id){
+        $table = (new static)::find($id->input("id"));
+        $result = $table->delete();
+
+        if($result){
+            return false;
+        }
+        return true;
+    }
+
     public function openTable($id)
     {
         $table = (new static)::find($id);
 
         $order = Order::select('orders.id')
-        ->where('orders.table_id',$table->id) 
+        ->where('orders.table_id',$table->id)
         ->where('orders.status',1)
-        ->join('order_details', function($join) 
+        ->join('order_details', function($join)
         {
             $join->on('order_details.order_id', '=', 'orders.id');
         })
@@ -38,17 +67,16 @@ class Table extends Model
             $table->save();
             event(new TableEvent($table->id,$table->number,$order->id));
         }
-        
+
     }
 
     public function closeTable($id)
     {
         $table = (new static)::find($id);
-
         $order = Order::select('orders.id')
-        ->where('orders.table_id',$table->id) 
+        ->where('orders.table_id',$table->id)
         ->where('orders.status',1)
-        ->join('order_details', function($join) 
+        ->join('order_details', function($join)
         {
             $join->on('order_details.order_id', '=', 'orders.id');
         })
@@ -60,7 +88,7 @@ class Table extends Model
             $table->status = 0;
             $table->save();
         }
-        
+
     }
 
     public function changeTable($data){
@@ -76,7 +104,7 @@ class Table extends Model
             {
                 $tableOld->status = 0;
                 $tableOld->save();
-            }            
+            }
             return true;
         }
         return false;

@@ -14,7 +14,7 @@ const store = createStore({
         showDiscount        : false,
         tables          : [],
         cart1           : {},
-        products        : [], 
+        products        : [],
         subtotal_amount_order:0,
         total_amount_order: 0,
         total_amount_order_paid: 0,
@@ -51,7 +51,7 @@ const store = createStore({
             localStorage.setItem("table",null);
             localStorage.setItem("cart1",{});
             localStorage.setItem("tableNumber",0);
-            
+
             state.loadData=false;
         },
         setTables(state, payload)
@@ -99,7 +99,7 @@ const store = createStore({
                     state.tables[i].status = 1
                 }
             }
-  
+
         },
         commentCommit(state,payload){
             state.cart1[state.tableActivate][payload.payload.id].note = payload.comment;
@@ -115,18 +115,18 @@ const store = createStore({
 
                 state.orderActivate = responseOrder.data.id
                 state.discount_active = responseOrder.data.discount;
-       
+
                 /****LLAMADA A LOS DATOS DE DETAIL */
                 axios.post('/get-order-detail',{table:state.tableActivate})
                 .then(responseDetail=>{
                     state.products = responseDetail.data;
                     store.commit('calculateAmountCommit');
                     store.state.loadData = false;
-                }) 
+                })
 
             });
 
-            
+
         },
         calculateAmountCommit(state)
         {
@@ -143,16 +143,16 @@ const store = createStore({
             /****valor de la propina */
             state.tip = 0;
             /******** valor de contador de los productos sin pagar */
-       
+
             if(state.products.length > 0)
             {
                 for(let i = 0; i< state.products.length; i++)
                 {
                     if( state.products[i].status > 0)
-                    {    
+                    {
                         /**** obtengo el total limpio de los productos agregados**** */
                         state.subtotal_amount_order += state.products[i].amount;
-                       
+
                         if(state.products[i].date_pay == null)
                         {
                             if(state.products[i].percentage>0)
@@ -160,14 +160,14 @@ const store = createStore({
                                 /***funcion para calcular el total con el descuento en porcentage***/
                                 state.discount_active_percentage +=  ((state.products[i].amount * state.products[i].percentage )/ 100);
 
-                                /****************aqui se calcula lo que mostrara com redultado de la suma de 
+                                /****************aqui se calcula lo que mostrara com redultado de la suma de
                              * los produtos con el procetaje aplicado */
                                 state.total_amount_order += state.products[i].amount - ((state.products[i].amount * state.products[i].percentage )/ 100);
                             }
                             else
                             {
 
-                                    
+
                                     state.total_amount_order += state.products[i].amount
                                     state.amount_free += state.products[i].amount
                             }
@@ -179,9 +179,9 @@ const store = createStore({
                             //state.discount_active_percentage += (state.products[i].amount - ((state.products[i].amount * state.products[i].percentage )/ 100));
                             state.total_amount_order_paid += state.products[i].amount - ((state.products[i].amount * state.products[i].percentage )/ 100);
                         }
-                        
+
                     }
-                       
+
                 }
 
                 if(state.discount_active_percentage>0)
@@ -189,17 +189,17 @@ const store = createStore({
                      /********************mustra el total de porcentage descontado */
                     //state.discount_active_percentage = state.subtotal_amount_order - state.discount_active_percentage - state.amount_free - state.total_amount_order_paid;
                     console.log(state.total_amount_order,'total_amount_order');
-                   
+
                     console.log(state.subtotal_amount_order,'subtotal_amount_order');
-                    
+
                     console.log(state.discount_active_percentage ,'discount_active_percentage');
-                
+
                     console.log(state.amount_free,'amount_free');
-   
+
                     console.log(state.total_amount_order_paid,'total_amount_order_paid');
 
-                }  
-                
+                }
+
                 if(state.discount_active>0)
                 {
                     /********************para mostrar el total restando el descuento fijo */
@@ -229,7 +229,7 @@ const store = createStore({
             {
                 state.discount_active=state.discount;
             }
-           
+
             await axios.post('/apply-discount',{'percentage':state.porcentage,'discount':state.discount,'table':state.tableActivate})
             .then(response=>{
                 state.loadData = false;
@@ -244,7 +244,7 @@ const store = createStore({
         },
 
         async closeOrderCommit(state,payload){
-            await axios.post('/close-order',{'table':parseInt(state.tableActivateNumber),'order':parseInt(state.orderActivate),'tip':payload})
+            await axios.post('/close-order',{'table':parseInt(state.tableActivate ),'order':parseInt(state.orderActivate),'tip':payload})
             .then(response=>{
                 for(let i = 0; i< state.tables.length; i++){
                     if(state.tableActivate ==  state.tables[i].id)
@@ -275,7 +275,7 @@ const store = createStore({
                         state.tables[i].status = 0
                     }
                 }
-                
+
                 store.commit('clearFix');
             })
          },
@@ -293,15 +293,15 @@ const store = createStore({
                         {
                             state.tables[i].status = 1
                         }
-    
+
                         if(payload.oldTable ==  state.tables[i].id)
                         {
                             state.tables[i].status = 0
                         }
                     }
-                    store.commit('getOrderCommit'); 
+                    store.commit('getOrderCommit');
                 }
-                
+
             });
          },
          async deleteDiscountPermanentCommit(state)
@@ -310,7 +310,7 @@ const store = createStore({
             .then(response=>{
 
                 state.loadData = false;
-               
+
             });
          },
          async deleteDiscountPercentageCommit(state)
@@ -340,7 +340,7 @@ const store = createStore({
     },
     actions:{
         async getProducts ({commit,state},search){
-            
+
             try{
                 if(search.trim().length>0)
                 {
@@ -352,7 +352,7 @@ const store = createStore({
                 else{
                     commit('setProductsSearch',[]);
                 }
-                
+
             }
             catch(error)
             {
@@ -360,12 +360,14 @@ const store = createStore({
             }
         },
         async getTables ({commit,state}){
-            
+
             try{
                 await axios.post('/get-tables')
                 .then(response=>{
+
                     commit('setTables',response.data);
-                });  
+
+                });
             }
             catch(error)
             {
@@ -384,7 +386,7 @@ const store = createStore({
             {
                 state.cart1[state.tableActivate] = new Object();
             }
-           
+
             if(state.cart1[state.tableActivate].hasOwnProperty(products.id))
             {
                 product = {'id':products.id,'name':products.name,'price':products.price,'count':state.cart1[state.tableActivate][products.id].count,"note":state.cart1[state.tableActivate][products.id].note,'total_amount':null };
@@ -428,13 +430,13 @@ const store = createStore({
             commit('cancelDiscountCommit')
         },
         deleteDiscountPermanentAction({commit,state}){
-            commit('deleteDiscountPermanentCommit') 
+            commit('deleteDiscountPermanentCommit')
         },
         deleteDiscountPercentageAction({commit,state}){
             commit('deleteDiscountPercentageCommit')
         },
         closeOrderAction({commit,state},tip){
-            commit('closeOrderCommit',tip) 
+            commit('closeOrderCommit',tip)
         },
         closeOrderCheckAction({commit,state},data)
         {
@@ -446,14 +448,14 @@ const store = createStore({
         },
         changeTableAction({commit,state},tables)
         {
-            commit('changeTableCommit',{'newTable':tables.newTable, 'oldTable':tables.oldTable}) 
+            commit('changeTableCommit',{'newTable':tables.newTable, 'oldTable':tables.oldTable})
         },
         calculateAmountAction({commit,state},tables)
         {
-            commit('calculateAmountCommit') 
+            commit('calculateAmountCommit')
         },
         delDiscountProductAction({commit,state},product){
-            commit('delDiscountProductCommit',product) 
+            commit('delDiscountProductCommit',product)
         },
         addDiscountProductAction({commit,state},product)
         {
