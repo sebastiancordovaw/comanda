@@ -54,15 +54,16 @@ class TableController extends Controller
 
     public function delete(Request $request){
 
+
         $response = $this->order->getDetail($request->input("id"),"orders.table_id");
-        if($response[0]["status"])
+        if(count($response) && $response[0]["status"])
         {
             return response()->json([
                 'errors' =>["table"=>["Esta mesa se encuenta abierta"]],
             ], 422);
         }
         else{
-            $this->table->deletet($request);
+            return $this->table->deletet($request);
         }
 
     }

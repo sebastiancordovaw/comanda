@@ -51,7 +51,7 @@
 
                     <div class="grid grid-cols-12 bg-gray-600 text-white" style="margin: 5px 0 0 0;">
                         <div class="col-span-2 text-left p-2">Total </div>
-                        <div class="col-span-10 text-right py-2 px-6"><b>$ {{ $store.state.total_amount_order + ($store.state.total_amount_order * 0.1)}}</b></div>
+                        <div class="col-span-10 text-right py-2 px-6"><b>$ {{ $store.state.total_amount_order + (tip)}}</b></div>
                     </div>
                     <!--<div class="col-span-6"></div>-->
 
@@ -102,7 +102,8 @@ export default {
         const payAll = () => {
             store.dispatch("getOrder");
             paycheck.value =!paycheck.value;
-
+            store.dispatch('calculateAmountAction');
+            tip.value = store.state.total_amount_order * 0.1;
         }
 
         const setShow = ()=>{
@@ -110,7 +111,8 @@ export default {
         }
         onUpdated(() => {
 
-            tip.value = store.state.total_amount_order * 0.1;
+
+
         })
 
         return {tip,closeOrder,paidCheckFunction,paycheck,setShow,payAll}

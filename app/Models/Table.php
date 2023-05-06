@@ -6,6 +6,7 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use App\Events\TableEvent;
 use App\Events\CloseTableEvent;
+use Illuminate\Support\Facades\DB;
 
 class Table extends Model
 {
@@ -39,13 +40,18 @@ class Table extends Model
     }
 
     public function deletet($id){
-        $table = (new static)::find($id->input("id"));
-        $result = $table->delete();
-
-        if($result){
-            return false;
+        try{
+            $table = (new static)::find($id->input("id"));
+            $result = $table->delete();
+            if($result){
+                return true;
+            }
         }
-        return true;
+        catch(\Exception $e)
+        {
+            DB::rollback();
+            return response()->json($e->getMessage(),500);
+        }
     }
 
     public function openTable($id)

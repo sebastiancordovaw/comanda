@@ -16,4 +16,24 @@ class Zone extends Model
     public function tables(){
         return $this->hasMany(Table::class)->orderBy('number', 'asc');
     }
+    public function insertz($data)
+    {
+        $zone = (new static);
+        $zone->name = $data->input("name");
+        $zone->save();
+    }
+
+    public function deletez($data)
+    {
+        $zone = (new static)::where("name",$data->input("name"))->first();
+
+        if(count($zone->tables))
+        {
+            return response()->json([
+                'errors' =>"Esta mesa se encuenta abierta",
+            ], 422);
+        }
+
+        return $zone->delete();
+    }
 }

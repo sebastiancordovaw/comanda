@@ -166,8 +166,6 @@ const store = createStore({
                             }
                             else
                             {
-
-
                                     state.total_amount_order += state.products[i].amount
                                     state.amount_free += state.products[i].amount
                             }

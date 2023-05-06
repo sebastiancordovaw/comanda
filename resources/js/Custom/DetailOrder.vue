@@ -4,9 +4,10 @@
         <div v-if="product.date_pay==null" class="grid grid-cols-12 mt-1 bg-gray-100 border-l-4 border-yellow-400 hover:bg-yellow-200 product"  :id="product.id" :class ="product.status?'':'delete'" :paid = "(product.date_pay!=null)?true:false" :is_percentage = "(product.is_percentage)?true:false" :date_pay="product.date_pay">
             <div class="col-span-1 p-2 lg:col-span-2">{{ product.count }}</div>
             <div class="col-span-5 p-2"><b>{{ product.name }}</b><p><small class="text-sm">{{ product.note }}</small></p></div>
+
             <div class="col-span-2 p-2 text-center text-red-600 " v-if="product.percentage==0">
-                <svg v-if="product.status>0 && product.date_pay==null" xmlns="http://www.w3.org/2000/svg" @click="addDiscountProduct(product)" fill="none" style="margin:0 auto; position: relative; cursor: pointer;" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-6 h-6">
-                    <path stroke-linecap="round" stroke-linejoin="round" d="M2.25 6L9 12.75l4.286-4.286a11.948 11.948 0 014.306 6.43l.776 2.898m0 0l3.182-5.511m-3.182 5.51l-5.511-3.181" />
+                <svg v-if="product.status>0 && product.date_pay==null" xmlns="http://www.w3.org/2000/svg" @click="addDiscountProduct(product)" fill="none" style="margin:0 auto; position: relative; cursor: pointer;" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-5 h-5">
+                    <path stroke-linecap="round" stroke-linejoin="round" d="M12 4.5v15m0 0l6.75-6.75M12 19.5l-6.75-6.75" />
                 </svg>
             </div>
 
@@ -87,7 +88,7 @@
             </div>
         </div>
 
-        <div class="px-6 py-3 text-right text-white bg-gray-600 rounded-b-lg">
+        <div class="px-6 py-3 text-right text-white bg-gray-800">
             <button @click="showformDiscount" class="float-left px-2 text-black bg-gray-300 rounded-sm">%</button>
             <b>Total: $ {{ $store.state.total_amount_order }}</b>
         </div>

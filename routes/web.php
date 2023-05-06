@@ -1,11 +1,12 @@
 <?php
 
-use Illuminate\Foundation\Application;
-use Illuminate\Support\Facades\Route;
-use App\Http\Controllers\ProductController;
-use App\Http\Controllers\TableController;
-use App\Http\Controllers\OrderController;
 use Inertia\Inertia;
+use Illuminate\Support\Facades\Route;
+use Illuminate\Foundation\Application;
+use App\Http\Controllers\ZoneController;
+use App\Http\Controllers\OrderController;
+use App\Http\Controllers\TableController;
+use App\Http\Controllers\ProductController;
 
 /*
 |--------------------------------------------------------------------------
@@ -51,6 +52,9 @@ Route::middleware([
     Route::post('/insertTable', [TableController::class,'insert'])->name('insertTable');
     Route::post('/updateTable', [TableController::class,'update'])->name('updateTable');
     Route::post('/deleteTable', [TableController::class,'delete'])->name('deleteTable');
+
+    Route::post('/insertRoom', [ZoneController::class,'insert'])->name('insertTable');
+    Route::post('/delRoom', [ZoneController::class,'delete'])->name('delRoom');
 
     // php artisan serve --host 192.168.0.6
 

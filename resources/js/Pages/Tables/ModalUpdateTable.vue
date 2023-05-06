@@ -13,9 +13,8 @@
                 <div class="sm:col-span-3">
                     <label for="salon" class="block text-sm font-medium leading-6 text-gray-900">Salón</label>
                     <div class="mt-2">
-                    <select v-model="salon" id="salon" class="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-orange-400 sm:text-sm sm:leading-6">
-                        <option value="Terraza">Terraza</option>
-                        <option value="Salón">Salón</option>
+                        <select v-model="salon" id="salon" class="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-orange-400 sm:text-sm sm:leading-6">
+                        <option v-for="(table,i) in $store.state.tables" :key="i" :value="i">{{i}}</option>
                     </select>
                     </div>
                 </div>
@@ -41,6 +40,7 @@ import Modal from '@/Components/Modal.vue'
 
 import { ref, onUpdated, onMounted } from 'vue';
 import { useStore } from 'vuex';
+import Swal from 'sweetalert2';
 
 let closemodal= null;
 const salon = ref(null)
@@ -97,6 +97,13 @@ export default {
                 if(error.response.status === 422)
                 {
                     errores.value = error.response.data.errors;
+                }
+                else if(error.response.status === 500){
+                    Swal.fire({
+                    icon: 'error',
+                    title: 'Oops...',
+                    text: 'Esta mesa no se puede eliminar por que ya tiene ventas en el historial'
+                    });
                 }
             })
         }

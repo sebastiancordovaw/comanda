@@ -1,21 +1,13 @@
 <template>
     <modal  :show = "show" ><!--@close="ChangeStateModal">-->
-            <div class="grid grid-cols-1 p-6 mt-10 gap-x-6 gap-y-8 sm:grid-cols-6">
-                <div class="sm:col-span-3">
-                    <label for="num" class="block text-sm font-medium leading-6 text-gray-900">Número mesa</label>
+            <div class="grid grid-cols-1 p-6 mt-10 gap-x-6 gap-y-8 sm:grid-cols-12">
+                <div class="sm:col-span-12">
+                    <label for="room" class="block text-sm font-medium leading-6 text-gray-900">Sala</label>
                     <div class="mt-2">
-                    <input type="text" v-model="num" id="num"  class="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-orange-400 sm:text-sm sm:leading-6">
+                    <input type="text" v-model="room" id="room"  class="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-orange-400 sm:text-sm sm:leading-6">
                     </div>
                 </div>
 
-                <div class="sm:col-span-3">
-                    <label for="salon" class="block text-sm font-medium leading-6 text-gray-900">Salón</label>
-                    <div class="mt-2">
-                    <select v-model="salon" id="salon" class="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-orange-400 sm:text-sm sm:leading-6">
-                        <option v-for="(table,i) in $store.state.tables" :key="i" :value="i">{{i}}</option>
-                    </select>
-                    </div>
-                </div>
             </div>
             <ul v-if="errores!=''"  class="p-4 rounded-sm bg-red-400 text-white ">
                  <li v-for="(error,key) in errores" :key ="key">
@@ -23,7 +15,7 @@
                  </li>
             </ul>
             <div class="p-4 ">
-                <button @click = "addTable" class="float-right p-2 text-white bg-green-400 rounded-sm hover:bg-green-500">Confirmar</button>
+                <button @click = "addRoom" class="float-right p-2 text-white bg-green-400 rounded-sm hover:bg-green-500">Confirmar</button>
                 <button @click = "ChangeStateModalCloseButton" class="float-right p-2 mr-4 text-gray-800 hover:text-white bg-gray-300 rounded-sm hover:bg-gray-400">Cerrar</button>
                 <div class="clear-both"></div>
             </div>
@@ -39,8 +31,7 @@ import { ref, onUpdated, onMounted } from 'vue';
 import { useStore } from 'vuex';
 
 let closemodal= null;
-const salon = ref(null);
-const num = ref('');
+const room = ref('');
 const errores = ref('');
 export default {
     emits:['show'],
@@ -52,25 +43,21 @@ export default {
 
         }
 
-
         closemodal = ()=>{
-            emit('close',props.room);
+            emit('close');
             errores.value = '';
         }
 
         onUpdated(() => {
-            salon.value = props.room;
-            num.value = props.lastTable;
             errores.value = '';
         })
 
-        const addTable = async() => {
+        const addRoom = async() => {
             let formData = new URLSearchParams();
-            formData.append("number", num.value);
-            formData.append("salon", salon.value);
+            formData.append("name", room.value);
             const AxiosConfig = {
                 method: 'POST',
-                url: '/insertTable',
+                url: '/insertRoom',
                 data: formData,
                 headers: {
                     'Content-Type': 'application/x-www-form-urlencoded',
@@ -80,22 +67,17 @@ export default {
             await axios(AxiosConfig)
             .then(response=>
             {
-                emit('show',salon.value);
+                emit('show',room.value);
                 errores.value = '';
             })
             .catch(error=>{
                 if(error.response.status === 422)
                 {
-
                     errores.value = error.response.data.errors;
                 }
             })
-
         }
-
-
-        return {addTable,salon,num,ChangeStateModal,errores}
-
+        return {addRoom,room,ChangeStateModal,errores}
     },
     data()
     {
@@ -111,7 +93,7 @@ export default {
         {
             closemodal();
         }
-    },props:['show','room','lastTable']
+    },props:['show']
 }
 
 </script>
