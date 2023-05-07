@@ -55,6 +55,7 @@ Route::middleware([
 
     Route::post('/insertRoom', [ZoneController::class,'insert'])->name('insertTable');
     Route::post('/delRoom', [ZoneController::class,'delete'])->name('delRoom');
+    Route::put('/updateRoom', [ZoneController::class,'update'])->name('updateRoom');
 
     // php artisan serve --host 192.168.0.6
 

@@ -36,4 +36,11 @@ class Zone extends Model
 
         return $zone->delete();
     }
+
+    public function updatez($data)
+    {
+        $zone = (new static)::where("name",$data->input("old_name"))->first();
+        $zone->name = $data->input("name");
+        $zone->save();
+    }
 }

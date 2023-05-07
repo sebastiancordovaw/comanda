@@ -36,4 +36,15 @@ class ZoneController extends Controller
         return $this->zone->deletez($request);
     }
 
+    public function update(Request $request){
+        $validator = Validator::make($request->all(), [
+            "name" => "required|unique:zones,name,".$request->input("name")
+        ]);
+        if ($validator->fails()) {
+            return response()->json([
+                'errors' =>$validator->errors(),
+            ], 422);
+        }
+        return $this->zone->updatez($request);
+    }
 }

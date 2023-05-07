@@ -51,6 +51,13 @@ export default{
             getTables(room);
         }
 
+        const closeUpdateRoom = (room) =>{
+            showUpdateRoom.value = !showUpdateRoom.value;
+            room = (room)?room:tabSelect.value;
+            getTables(room);
+        }
+
+
 
         const updateTable = (table,i) =>{
             tableSelect.value =  table;
@@ -103,7 +110,8 @@ export default{
                 Swal.fire({
                 icon: 'error',
                 title: 'Oops...',
-                text: 'No puede eliminar una sala con mesas'
+                text: 'No puede eliminar una sala con mesas',
+                confirmButtonColor: '#27ae60',
                 });
             });
         }
@@ -169,6 +177,7 @@ export default{
             showAddRoom,
             updateRoom,
             closeAddRoom,
+            closeUpdateRoom,
             showUpdateRoom,
             zone,
             addTable,
@@ -236,17 +245,24 @@ export default{
         <div class="py-12">
             <div class="mx-auto max-w-7xl sm:px-6 lg:px-8">
                 <div class="overflow-hidden bg-white shadow-xl">
-                    <ul class="relative pt-3 mb-3 lg:mb-0 pl-3 bg-gray-800 rooms">
-                        <li  @click="zone(i)" :class="i" class="float-left p-3 py-3 mr-2 text-white bg-gray-600 cursor-pointer rounded-t-sm space hover:bg-gray-500"  v-for="(table, i ) in $store.state.tables" :key="i">{{ i }}</li>
-                        <button @click="addRoom" class="float-right p-2 mr-4 text-gray-800 hover:text-white bg-gray-300 rounded-sm hover:bg-gray-400">
-                            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-6 h-6">
-                            <path stroke-linecap="round" stroke-linejoin="round" d="M12 4.5v15m7.5-7.5h-15" />
-                            </svg>
-                        </button>
+                    <ul class="relative pt-3 pl-3 mb-3 bg-gray-800 lg:mb-0 rooms">
+                        <li  @click="zone(i)" :class="i" class="float-left p-3 py-3 mr-2 text-white bg-gray-600 rounded-t-sm cursor-pointer space hover:bg-gray-500"  v-for="(table, i ) in $store.state.tables" :key="i">{{ i }}</li>
 
                         <button @click="delRoom" class="float-right p-2 mr-4 text-white bg-red-600 rounded-sm hover:bg-red-500">
                             <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-6 h-6">
                             <path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12" />
+                            </svg>
+                        </button>
+
+                        <button @click="updateRoom" class="float-right p-2 mr-4 text-gray-800 bg-yellow-400 rounded-sm hover:bg-yellow-300">
+                            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-6 h-6">
+                            <path stroke-linecap="round" stroke-linejoin="round" d="M16.862 4.487l1.687-1.688a1.875 1.875 0 112.652 2.652L10.582 16.07a4.5 4.5 0 01-1.897 1.13L6 18l.8-2.685a4.5 4.5 0 011.13-1.897l8.932-8.931zm0 0L19.5 7.125M18 14v4.75A2.25 2.25 0 0115.75 21H5.25A2.25 2.25 0 013 18.75V8.25A2.25 2.25 0 015.25 6H10" />
+                            </svg>
+                        </button>
+
+                        <button @click="addRoom" class="float-right p-2 mr-4 text-gray-800 bg-gray-300 rounded-sm hover:text-white hover:bg-gray-400">
+                            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-6 h-6">
+                            <path stroke-linecap="round" stroke-linejoin="round" d="M12 4.5v15m7.5-7.5h-15" />
                             </svg>
                         </button>
                         <div class="clear-both"></div>
@@ -256,13 +272,13 @@ export default{
                             <div @click="updateTable(table,i)" class="border-b-4 border-gray-400 border-solid rounded-b-md"  >{{table.number}}</div>
                         </a>
                         <a @click="addTable(i)" class="float-left w-12 h-12 mb-2 ml-2 mr-2 text-3xl text-center text-white bg-gray-500 rounded-md lg:mt-4 lg:w-20 lg:h-20 hover:bg-gray-400 tables">
-                            <div class="border-b-4 border-gray-400 border-solid rounded-b-md text-4xl" >+</div>
+                            <div class="text-4xl border-b-4 border-gray-400 border-solid rounded-b-md" >+</div>
                         </a>
                     </div>
                     <modal-add-table :show = showAddTable @show="closeAddTableModal" @close="closeTableModal" :room = "tabSelect" :lastTable="lastTable"></modal-add-table>
                     <modal-update-table :show = showUpdateTable @show="closeUpdateTableModal" @close="closeUpdateTableModal" :room="tabSelect" :table="tableSelect"></modal-update-table>
                     <modal-add-room :show="showAddRoom" @close="closeAddRoom" @show="closeAddRoom"></modal-add-room>
-                    <modal-update-room :show="showUpdateRoom"></modal-update-room>
+                    <modal-update-room :show="showUpdateRoom" :roomselect="tabSelect" @close="closeUpdateRoom"  @show="closeUpdateRoom"></modal-update-room>
                 </div>
             </div>
         </div>
