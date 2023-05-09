@@ -7,6 +7,7 @@ use App\Http\Controllers\ZoneController;
 use App\Http\Controllers\OrderController;
 use App\Http\Controllers\TableController;
 use App\Http\Controllers\ProductController;
+use App\Http\Controllers\CategoryController;
 
 /*
 |--------------------------------------------------------------------------
@@ -30,6 +31,8 @@ Route::middleware([
 ])->group(function () {
     Route::get('/dashboard', function () {return Inertia::render('Dashboard');})->name('dashboard');
     Route::get('/tables', function () {return Inertia::render('Tables');})->name('tables');
+    Route::get('/products', function () {return Inertia::render('Product');})->name('product');
+    Route::get('/category', function () {return Inertia::render('Category');})->name('category');
 
 
     Route::post('/get-products', [ProductController::class,'getProducts'])->name('get-products');
@@ -56,6 +59,13 @@ Route::middleware([
     Route::post('/insertRoom', [ZoneController::class,'insert'])->name('insertTable');
     Route::post('/delRoom', [ZoneController::class,'delete'])->name('delRoom');
     Route::put('/updateRoom', [ZoneController::class,'update'])->name('updateRoom');
+
+    Route::post('/get-categories', [CategoryController::class,'getCategories'])->name('get-categories');
+    Route::post('/get-category', [CategoryController::class,'getCategory'])->name('get-category');
+    Route::post('/createCategory', [CategoryController::class,'createCategory'])->name('createCategory');
+    Route::put('/updateCategory', [CategoryController::class,'updateCategory'])->name('updateCategory');
+    Route::delete('/deleteCategory', [CategoryController::class,'deleteCategory'])->name('deleteCategory');
+
 
     // php artisan serve --host 192.168.0.6
 

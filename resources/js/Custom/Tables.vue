@@ -1,6 +1,6 @@
 <template>
     <ul class="relative pt-3 pl-3 bg-gray-800 rooms">
-        <li  @click="zone(i)" :class="i" class="float-left p-3 py-3 mr-2 text-white bg-gray-600 cursor-pointer rounded-t-sm space hover:bg-gray-500"  v-for="(table, i ) in $store.state.tables" :key="i">{{ i }} <span :class="'total_tables_'+i">0</span></li>
+        <li  @click="zone(i)" :class="i" class="float-left p-3 py-3 mr-2 text-white bg-gray-600 rounded-t-sm cursor-pointer space hover:bg-gray-500"  v-for="(table, i ) in $store.state.tables" :key="i">{{ i }} <span :class="'total_tables_'+i">0</span></li>
         <div class="clear-both"></div>
     </ul>
     <div v-for="(data_table, i ) in $store.state.tables" :key="i" :id="i" :class="i" class="hidden zones" >
@@ -8,6 +8,7 @@
             <div class="border-b-4 border-green-400 border-green rounded-b-md"  >{{table.number}}</div>
         </a>
     </div>
+    <div class="clear-both"></div>
 </template>
 
 <script>
@@ -176,7 +177,11 @@ export default {
             {
                 document.getElementsByClassName(zoneInitial)[i].classList.add('active');
             }
-            document.getElementById(zoneInitial).classList.add("display");
+            if(Object.keys(store.state.tables).length)
+            {
+                document.getElementById(zoneInitial).classList.add("display");
+            }
+
         }
         return {zone, selectTable}
     }

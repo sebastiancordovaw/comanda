@@ -160,16 +160,32 @@ export default{
             {
                 document.getElementsByClassName('space')[i].classList.remove('active');
             }
-            document.getElementsByClassName(zoneClick)[0].classList.add('active');
-            document.getElementById(zoneClick).classList.add("display");
-            tabSelect.value = zoneClick;
+
+            if(zoneClick)
+            {
+                document.getElementsByClassName(zoneClick)[0].classList.add('active');
+                document.getElementById(zoneClick).classList.add("display");
+                tabSelect.value = zoneClick;
+            }
+
+
         }
 
         const initZones = () =>{
 
             let zoneInitial= Object.keys(store.state.tables)[0];
-            document.getElementsByClassName(zoneInitial)[0].classList.add('active');
-            document.getElementById(zoneInitial).classList.add("display");
+            if(zoneInitial)
+            {
+                if(document.getElementsByClassName(zoneInitial).length)
+                {
+                    document.getElementsByClassName(zoneInitial)[0].classList.add('active');
+                }
+                console.log(document.getElementById(zoneInitial).length);
+                if(document.getElementById(zoneInitial).length)
+                {
+                    document.getElementById(zoneInitial).classList.add("display");
+                }
+            }
         }
         return {
             addRoom,
