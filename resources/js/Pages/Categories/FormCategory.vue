@@ -1,7 +1,7 @@
 <template>
 
     <div class="p-4 text-lg text-white bg-red-500">
-        <strong class="float-left" v-if="category">{{category.name}}</strong>
+        <strong class="float-left" v-if="category">{{(name)?name:category.name}}</strong>
         <div class="clear-both"></div>
     </div>
 

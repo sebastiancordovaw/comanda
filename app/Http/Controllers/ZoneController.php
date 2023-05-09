@@ -37,8 +37,10 @@ class ZoneController extends Controller
     }
 
     public function update(Request $request){
+
+        $room = Zone::where("name",$request->input("old_name"))->first();
         $validator = Validator::make($request->all(), [
-            "name" => "required|unique:zones,name,".$request->input("name")
+            "name" => "required|unique:zones,name,".$room->id
         ]);
         if ($validator->fails()) {
             return response()->json([

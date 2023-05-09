@@ -28,6 +28,10 @@ class CategoryController extends Controller
         return $this->category->deleteCategory($request);
     }
 
+    public function updateSort($request){
+        return $this->category->updateSort($request);
+    }
+
     public function createCategory(Request $request)
     {
         if($request->input("isSubCategory")=='true' || $request->input("isSubCategory")=='1')

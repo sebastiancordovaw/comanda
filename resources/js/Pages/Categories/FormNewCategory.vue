@@ -75,13 +75,13 @@ const errores = ref('');
 const name = ref('');
 const isSubCategory = ref(0);
 const fatherCategory = ref('');
-const qr = ref(0);
+const qr = ref(true);
 export default {
     emits:['updateList','idRow'],
     setup(props,{emit}){
 
         onMounted(()=>{
-            qr.value = 0;
+            qr.value = true;
             isSubCategory.value = 0;
             name.value = "";
             fatherCategory.value = '';

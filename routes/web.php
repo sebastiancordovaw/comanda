@@ -65,6 +65,10 @@ Route::middleware([
     Route::post('/createCategory', [CategoryController::class,'createCategory'])->name('createCategory');
     Route::put('/updateCategory', [CategoryController::class,'updateCategory'])->name('updateCategory');
     Route::delete('/deleteCategory', [CategoryController::class,'deleteCategory'])->name('deleteCategory');
+    Route::post('/updateSort/{data}', [CategoryController::class,'updateSort'])->name('updateSort');
+
+
+
 
 
     // php artisan serve --host 192.168.0.6

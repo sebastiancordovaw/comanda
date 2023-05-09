@@ -19,7 +19,7 @@ class Zone extends Model
     public function insertz($data)
     {
         $zone = (new static);
-        $zone->name = $data->input("name");
+        $zone->name = ucfirst($data->input("name"));
         $zone->save();
     }
 
@@ -40,7 +40,7 @@ class Zone extends Model
     public function updatez($data)
     {
         $zone = (new static)::where("name",$data->input("old_name"))->first();
-        $zone->name = $data->input("name");
+        $zone->name = ucfirst($data->input("name"));
         $zone->save();
     }
 }

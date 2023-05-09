@@ -17,6 +17,7 @@ return new class extends Migration
             $table->id();
             $table->string('name',255);
             $table->boolean('qr')->default(1);
+            $table->integer('order')->default(1);
             $table->foreignId('category_id')->nullable()->constrained();
             $table->timestamps();
         });

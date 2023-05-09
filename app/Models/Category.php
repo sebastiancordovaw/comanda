@@ -12,6 +12,7 @@ class Category extends Model
     protected $fillable = [
         'name',
         'qr',
+        'order',
         'category_id'
     ];
 
@@ -35,6 +36,7 @@ class Category extends Model
         })
         ->where("categories.category_id",null)
         ->groupBy("categories.id","categories.name", "categories.qr")
+        ->orderBy("categories.order", "asc")
         ->orderBy("categories.name", "asc")
         ->get();
 
@@ -42,7 +44,7 @@ class Category extends Model
 
         foreach($fathers as $k => $v)
         {
-            $response[$v["id"]]=$v;
+            $response[]=$v;
             $v->categories;
             foreach($v->categories as $k2 => $v2)
             {
@@ -88,6 +90,7 @@ class Category extends Model
         {
             $category->category_id = null;
         }
+
 
         $category->save();
 
@@ -163,6 +166,19 @@ class Category extends Model
         else{
             $category= (new static)::find($request->input("id"));
             $category->delete();
+        }
+    }
+
+    public function updateSort($request)
+    {
+        $request = json_decode($request);
+        $count = 0;
+        foreach($request as $k => $v)
+        {
+            $count++;
+            $category = (new static)::find($v->id);
+            $category->order = $count;
+            $category->save();
         }
     }
 }
