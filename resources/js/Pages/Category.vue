@@ -122,9 +122,6 @@ export default {
 .slide-fade-enter-active {
   transition: all 0.3s ease-out;
 }
-
-
-
 .slide-fade-enter-from
 {
   transform: translateX(60px);

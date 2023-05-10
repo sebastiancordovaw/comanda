@@ -14,7 +14,7 @@ export default mitt()
 
 Then, on your component or on your pinia store :
 
-import EventBus from "../lib/EventBus";
+import EventBus from "../../EventBus";
 ...
 
 EventBus.emit(...)

@@ -67,6 +67,8 @@ Route::middleware([
     Route::delete('/deleteCategory', [CategoryController::class,'deleteCategory'])->name('deleteCategory');
     Route::post('/updateSort/{data}', [CategoryController::class,'updateSort'])->name('updateSort');
 
+    Route::post('/get-products/{id}', [ProductController::class,'getProductsCategory']);
+
 
 
 
