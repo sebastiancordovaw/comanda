@@ -1,5 +1,5 @@
 <template>
-
+<div v-if="viewNewCategory">
     <div class="p-4 text-lg text-white bg-red-500">
         <strong class="float-left">CREAR CATEGORÍA</strong>
         <div class="clear-both"></div>
@@ -35,10 +35,9 @@
             </label>
         </div>
         <div v-if="isSubCategory" class="sm:col-span-12">
-            <label for="name" class="block font-medium leading-6 text-gray-900 text-md">Categoría Padre</label>
+            <label for="category_id" class="block font-medium leading-6 text-gray-900 text-md">Categoría Padre</label>
             <div class="mt-2">
-                <select v-model="fatherCategory" :disabled="(isSubCategory)?false:true" id="name" class="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-orange-400 sm:text-sm sm:leading-6">
-                    <option value="">Seleccione Categoría</option>
+                <select v-model="category_id"  id="category_id" class="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-orange-400 sm:text-sm sm:leading-6">
                     <template v-for="(cat, i ) in selectCategories" :key="i">
                         <option :value="cat.id">{{ cat.name }}</option>
                     </template>
@@ -66,33 +65,42 @@
         <button @click = "save" class="p-2 text-white bg-green-400 rounded-sm hover:bg-green-500">Guardar</button>
         <div class="clear-both"></div>
     </div>
-
+</div>
 </template>
 <script>
 import {ref, onMounted, onUpdated} from 'vue';
+import EventBus from "../../EventBus.js";
+const viewNewCategory = ref(true);
 const errores = ref('');
-
 const name = ref('');
 const isSubCategory = ref(0);
-const fatherCategory = ref('');
+const category_id = ref('');
 const qr = ref(true);
+const selectCategories = ref([]);
 export default {
-    emits:['updateList','idRow'],
     setup(props,{emit}){
 
         onMounted(()=>{
-            qr.value = true;
-            isSubCategory.value = 0;
-            name.value = "";
-            fatherCategory.value = '';
-            errores.value="";
+            viewNewCategory.value = true;
+        })
+        EventBus.on('openNewCategory',(category)=>{
+            viewNewCategory.value = true;
+            reset();
+        });
+
+        EventBus.on('openUpdateCategory',(category)=>{
+            viewNewCategory.value = false;
+        });
+
+        EventBus.on('sendCategories',(categories)=>{
+            selectCategories.value = categories;
         })
 
         const save = async() =>{
             let formData = new URLSearchParams();
             formData.append("name", name.value);
             formData.append("isSubCategory", isSubCategory.value);
-            formData.append("fatherCategory", fatherCategory.value);
+            formData.append("category_id", category_id.value);
             formData.append("qr", qr.value);
 
             const AxiosConfig = {
@@ -107,9 +115,9 @@ export default {
             await axios(AxiosConfig)
             .then(response=>
             {
+                EventBus.emit('UpdateCategory',  response.data);
                 errores.value = '';
-                emit('idRow',  response.data.idrow);
-                emit('updateList',  response.data.rows);
+                reset();
             })
             .catch(error=>{
                 if(error.response.status === 422)
@@ -119,35 +127,27 @@ export default {
             })
         }
 
+        const reset = ()=>{
+            qr.value = true;
+            isSubCategory.value = 0;
+            name.value = "";
+            category_id.value = '';
+            errores.value="";
+        }
 
         return {
             name,
             isSubCategory,
-            fatherCategory,
+            category_id,
             qr,
             save,
-            errores
+            errores,
+            selectCategories,
+            viewNewCategory
         }
     },
     components:{
 
-    },
-    props:['selectCategories']
+    }
 }
 </script>
-
-<style scoped>
-.slide-fade-enter-active {
-    transition: all 0.3s ease-out;
-  }
-
-  .slide-fade-leave-active {
-    transition: all 0.8s cubic-bezier(1, 0.5, 0.8, 1);
-  }
-
-  .slide-fade-enter-from,
-  .slide-fade-leave-to {
-    transform: translateX(20px);
-    opacity: 0;
-  }
-</style>

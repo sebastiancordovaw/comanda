@@ -67,7 +67,12 @@ Route::middleware([
     Route::delete('/deleteCategory', [CategoryController::class,'deleteCategory'])->name('deleteCategory');
     Route::post('/updateSort/{data}', [CategoryController::class,'updateSort'])->name('updateSort');
 
-    Route::post('/get-products/{id}', [ProductController::class,'getProductsCategory']);
+    Route::post('/get-products/{id}', [ProductController::class,'getProducts']);
+    Route::post('/get-CategoriesTree', [ProductController::class,'getCategoriesTree'])->name('get-CategoriesTree');
+    Route::post('/addProducto', [ProductController::class,'addProducto'])->name('addProducto');
+    Route::put('/updateProducto', [ProductController::class,'updateProducto'])->name('updateProducto');
+    Route::delete('/deleteProduct', [ProductController::class,'deleteProduct'])->name('deleteProduct');
+    Route::post('/updateSortProduct/{data}', [ProductController::class,'updateSortProduct']);
 
 
 

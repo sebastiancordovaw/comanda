@@ -22,6 +22,7 @@ return new class extends Migration
             $table->double('quantityUnitMeasure', 8, 2)->nullable();
             $table->double('stock', 8, 2)->nullable();
             $table->boolean('status')->default(1);
+            $table->integer('order')->default(1);
             $table->enum('qr', ['yes', 'not', 'category']);
             $table->foreignId('category_id')->constrained();
             $table->timestamps();

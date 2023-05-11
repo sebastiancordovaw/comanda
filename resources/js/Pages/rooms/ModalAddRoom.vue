@@ -9,14 +9,14 @@
                 </div>
 
             </div>
-            <ul v-if="errores!=''"  class="p-4 rounded-sm bg-red-400 text-white ">
+            <ul v-if="errores!=''"  class="p-4 text-white bg-red-400 rounded-sm ">
                  <li v-for="(error,key) in errores" :key ="key">
                     {{ error[0] }}
                  </li>
             </ul>
             <div class="p-4 ">
                 <button @click = "addRoom" class="float-right p-2 text-white bg-green-400 rounded-sm hover:bg-green-500">Confirmar</button>
-                <button @click = "ChangeStateModalCloseButton" class="float-right p-2 mr-4 text-gray-800 hover:text-white bg-gray-300 rounded-sm hover:bg-gray-400">Cerrar</button>
+                <button @click = "ChangeStateModalCloseButton" class="float-right p-2 mr-4 text-gray-800 bg-gray-300 rounded-sm hover:text-white hover:bg-gray-400">Cerrar</button>
                 <div class="clear-both"></div>
             </div>
 
@@ -68,6 +68,7 @@ export default {
             .then(response=>
             {
                 emit('show',room.value);
+                room.value = '';
                 errores.value = '';
             })
             .catch(error=>{

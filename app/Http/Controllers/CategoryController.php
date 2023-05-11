@@ -38,7 +38,7 @@ class CategoryController extends Controller
         {
             $validar = [
                 "name" => "required|unique:categories,name,".$request->input("id"),
-                "fatherCategory" => "required"
+                "category_id" => "required"
             ];
         }
         else{
@@ -64,7 +64,7 @@ class CategoryController extends Controller
         {
             $validar = [
                 "name" => "required|unique:categories,name,".$request->input("id"),
-                "fatherCategory" => "required"
+                "category_id" => "required"
             ];
         }
         else{

@@ -18,7 +18,11 @@ class Category extends Model
 
     public function products()
     {
-        return $this->hasMany(Product::class)->orderBy('name', 'asc');
+        return $this->hasMany(Product::class)
+        ->orderBy('status', 'desc')
+        ->orderBy('order', 'asc');
+
+
     }
 
     public function categories()
@@ -79,11 +83,14 @@ class Category extends Model
             $category->qr = 0;
         }
 
-        if($request->input("isSubCategory")!='false')
+        if($request->input("isSubCategory")=='true' || $request->input("isSubCategory")=='1')
         {
-            if($request->input("fatherCategory"))
+            if($request->input("category_id") && $request->input("category_id") != 'null')
             {
-                $category->category_id = $request->input("fatherCategory");
+                $category->category_id = $request->input("category_id");
+            }
+            else{
+                $category->category_id = null;
             }
         }
         else
@@ -91,16 +98,11 @@ class Category extends Model
             $category->category_id = null;
         }
 
-
         $category->save();
 
-        $id =  $category::latest('id')->first();
-        $categoryList = self::getCategories();
+        $result =  $category::latest('id')->first();
 
-        return response()->json([
-            'idrow' =>$id,
-            'rows' =>$categoryList,
-        ], 200);
+        return $result->id;
     }
 
     public function updateCategory($request)
@@ -116,11 +118,14 @@ class Category extends Model
             $category->qr = 0;
         }
 
-        if($request->input("isSubCategory")!='false')
+        if($request->input("isSubCategory")=='true' || $request->input("isSubCategory")=='1')
         {
-            if($request->input("fatherCategory"))
+            if($request->input("category_id") && $request->input("category_id") != 'null')
             {
-                $category->category_id = $request->input("fatherCategory");
+                $category->category_id = $request->input("category_id");
+            }
+            else{
+                $category->category_id = null;
             }
         }
         else
@@ -128,14 +133,10 @@ class Category extends Model
             $category->category_id = null;
         }
 
-        $response = $category->save();
 
-        $categoryList = self::getCategories();
+        $category->save();
 
-        return response()->json([
-            'idrow' =>$request->input("id"),
-            'rows' =>$categoryList,
-        ], 200);
+        return  $request->input("id");
     }
 
     public function deleteCategory($request)

@@ -8,10 +8,10 @@
                         <div  class="pt-2 lg:col-span-2 lg:pt-0" >
                             <list-categories></list-categories>
                         </div>
-                        <div  class="pt-2 lg:col-span-5 lg:pt-0" >
+                        <div  class="pt-2 lg:col-span-7 lg:pt-0" >
                             <table-products></table-products>
                         </div>
-                        <div  class="pt-2 lg:col-span-5 lg:pt-0" >
+                        <div  class="pt-2 lg:col-span-3 lg:pt-0" >
                             <form-product></form-product>
                             <form-new-product></form-new-product>
                         </div>
