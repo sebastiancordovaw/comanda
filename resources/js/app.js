@@ -11,6 +11,8 @@ import VueSweetalert2 from 'vue-sweetalert2';
 import PrimeVue from 'primevue/config';
 import 'sweetalert2/dist/sweetalert2.min.css';
 
+
+
 import TreeSelect from 'primevue/treeselect';
 const appName = window.document.getElementsByTagName('title')[0]?.innerText || 'Laravel';
 
@@ -30,6 +32,7 @@ createInertiaApp({
         return createApp({ render: () => h(App, props) })
             .use(plugin)
             .use(store)
+            //.use(device)
             //.use(router)
             .use(VueSweetalert2)
             .use(PrimeVue)

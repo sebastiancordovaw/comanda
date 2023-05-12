@@ -1,7 +1,7 @@
 <template>
     <div v-if="$store.state.products.length>0">
 
-        <button @click = "changeTable" class="rounded-r-sm float-right p-1 text-white bg-green-400 border-0 hover:bg-green-500 text-sm">Cambiar Mesa</button>
+        <button @click = "changeTable" class="rounded-r-sm float-right p-1 text-white bg-green-400 border-0 hover:bg-green-500 text-sm">Cambiar</button>
         <select v-model="selectMesa" class="rounded-l-sm float-right text-sm p-1 text-orange-800 border-0" >
             <option value=null >Cambiar</option>
             <template v-for="(table, i ) in tables" :key="i"  >
