@@ -56,7 +56,7 @@ Route::middleware([
     Route::post('/updateTable', [TableController::class,'update'])->name('updateTable');
     Route::post('/deleteTable', [TableController::class,'delete'])->name('deleteTable');
 
-    Route::post('/insertRoom', [ZoneController::class,'insert'])->name('insertTable');
+    Route::post('/insertRoom', [ZoneController::class,'insert'])->name('insertRoom');
     Route::post('/delRoom', [ZoneController::class,'delete'])->name('delRoom');
     Route::put('/updateRoom', [ZoneController::class,'update'])->name('updateRoom');
 
@@ -73,7 +73,6 @@ Route::middleware([
     Route::put('/updateProducto', [ProductController::class,'updateProducto'])->name('updateProducto');
     Route::delete('/deleteProduct', [ProductController::class,'deleteProduct'])->name('deleteProduct');
     Route::post('/updateSortProduct/{data}', [ProductController::class,'updateSortProduct']);
-
 
 
 

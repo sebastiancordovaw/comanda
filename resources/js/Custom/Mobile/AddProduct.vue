@@ -38,7 +38,7 @@
 <script>
 import { ref, onMounted } from 'vue'
 import EventBus from '../../EventBus';
-import configCart1 from './configCart1.vue';
+import configCart1 from './ConfigCart1.vue';
 const categories = ref([]);
 
 const products = ref([]);
