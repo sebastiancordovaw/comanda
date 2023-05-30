@@ -1,0 +1,54 @@
+.bg-izquierdo {
+    position: relative;
+    z-index: 5;
+
+  }
+  
+  .bg-izquierdo::after 
+  {
+    content: ""; 
+    opacity: 0.4;
+    background-color: #d9d1e2;
+    top: 0; 
+    left: 0; 
+    bottom: 0; 
+    right: 0; 
+    position: absolute; 
+    z-index: -1; 
+}
+
+.bg-derecho {
+    position: relative;
+    z-index: 5;
+
+  }
+  
+  .bg-derecho::after 
+  {
+    content: ""; 
+    opacity: 0.8;
+    background-color: #f8f7fc;
+    top: 0; 
+    left: 0; 
+    bottom: 0; 
+    right: 0; 
+    position: absolute; 
+    z-index: -1; 
+}
+
+.bodyApp
+{
+  background-image: url('img/269.png'), radial-gradient(circle at 10% 20%, rgb(69, 86, 102) 0%, rgb(34, 34, 34) 90%); 
+  background-size: cover;
+}
+
+.btn-grade{
+  transform: rotate(45deg);
+}
+
+.tables p{
+  position: absolute;
+  top: 50%;
+  width: 100%;
+  margin-top: -18px;
+}

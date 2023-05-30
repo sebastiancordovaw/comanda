@@ -1,7 +1,7 @@
 <template>
         <div v-if="paycheck">
             <div>
-                    <div class="p-4 text-white bg-gray-600">
+                    <div class="p-4 text-white bg-gray-800">
                         Cerra Mesa {{ $store.state.tableActivateNumber }}
                         <button v-if="!finishCheck" @click="closemodalcloseOrder" class="float-right p-1 p-2 mr-4 text-gray-800 bg-gray-200 border-t border-b border-l border-r border-gray-700 rounded-sm hover:bg-gray-300">Pagar Todo</button>
                         <div class="clear-both"></div>
@@ -10,7 +10,7 @@
                     <div class="p-4 text-white bg-gray-400"><b>ADICIONES</b></div>
 
                     <template  v-for="(product) in $store.state.products" :key ="product.id">
-                        <div v-if ="product.status>0" class="grid grid-cols-12 border-l-2 border-yellow-400" :class="(product.date_pay!=null)?'pay':''" :id="'row_check_pay_'+product.id" style="margin: 2px 0 0 0;">
+                        <div v-if ="product.status>0" class="grid grid-cols-12 border-l-4 border-gray-800" :class="(product.date_pay!=null)?'pay':''" :id="'row_check_pay_'+product.id" style="margin: 2px 0 0 0;">
                             <div class="col-span-2 p-2 text-left">{{ product.count }} </div>
                             <div class="col-span-4 p-2"><b>{{ product.name }} </b></div>
                             <div class="col-span-1 lg:px-6 py-2 text-center"><b v-if="product.percentage>0" class="text-red-600">{{ product.percentage }}%</b> </div>
@@ -33,20 +33,20 @@
                     </template>
 
 
-                    <div class="grid grid-cols-12 border-l-2 border-gray-400" style="margin: 2px 0 0 0;">
-                        <div class="col-span-2 p-2 text-left">Propina 10%</div>
-                        <div class="col-span-10 px-6 py-2 text-right ">$<input v-model.number="tip" class="w-20 focus:ring-transparent" type="text"></div>
+                    <div class="grid grid-cols-12 border-l-4 border-gray-400 bg-gray-100 mt-1">
+                        <div class="col-span-2 p-1 text-left">Propina 10%</div>
+                        <div class="col-span-10 px-6 py-1 text-right ">$<input v-model.number="tip" type="text" class="w-20 focus:ring-transparent" ></div>
                     </div>
 
                     <!--
 
                     <div class="grid grid-cols-12 border-l-2 border-green-600" style="margin: 2px 0 0 0;">
-                        <div class="col-span-2 p-2 text-left"><b class="text-green-600">Subtotal </b></div>
-                        <div class="col-span-10 px-6 py-2 text-right"><b class="text-green-600">$ {{ $store.state.subtotal_amount_order }}</b></div>
+                        <div class="col-span-2 p-2 text-left"><b class="text-green-500">Subtotal </b></div>
+                        <div class="col-span-10 px-6 py-2 text-right"><b class="text-green-500">$ {{ $store.state.subtotal_amount_order }}</b></div>
                     </div>
                     -->
 
-                    <div class="grid grid-cols-12 text-white bg-green-600" v-if="$store.state.total_amount_order_paid" style="margin: 5px 0 0 0;">
+                    <div class="grid grid-cols-12 bg-gray-100  border-green-500 mt-1 border-l-4" v-if="$store.state.total_amount_order_paid" style="margin: 5px 0 0 0;">
                         <div class="col-span-2 p-2 text-left">Pagado </div>
                         <div class="col-span-10 px-6 py-2 text-right"><b>$ {{$store.state.total_amount_order_paid + $store.state.tip}}</b></div>
                     </div>
@@ -64,7 +64,7 @@
                         <div class="col-span-9 px-6 py-2 text-right"><b class="text-red-600">$ - {{ $store.state.discount_active_percentage }}</b></div>
                     </div>
 
-                    <div class="grid grid-cols-12 text-white bg-gray-600" style="margin: 5px 0 0 0;">
+                    <div class="grid grid-cols-12 text-white bg-gray-800" style="margin: 5px 0 0 0;">
                         <div class="col-span-2 p-2 text-left">Total </div>
                         <div class="col-span-10 px-6 py-2 text-right"><b>$ {{ $store.state.total_amount_order + tip }}</b></div>
                     </div>
@@ -72,8 +72,8 @@
 
             </div>
             <div class="p-4 ">
-                    <button @click = "closeOrderCheck" class="float-right p-2 text-white bg-green-400 rounded-sm hover:bg-green-500 ">Confirmar</button>
-                    <button @click = "modalClose" class="float-right p-2 mr-4 text-white bg-gray-400 rounded-sm hover:bg-gray-500">Cerrar</button>
+                    <button @click = "closeOrderCheck" class="float-right p-2 text-white bg-gray-800 rounded-sm hover:bg-gray-900 ">Confirmar</button>
+                    <button @click = "modalClose" class="float-right p-2 mr-4 text-white bg-cyan-400 rounded-sm hover:bg-cyan-500">Cancelar</button>
                     <div class="clear-both"></div>
                 </div>
     </div>
@@ -202,6 +202,6 @@ export default {
 
 <style>
 .pay{
-    background-color:#2ecc71;
+    background-color:#7bed9f;
 }
 </style>

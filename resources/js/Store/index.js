@@ -9,6 +9,7 @@ const store = createStore({
         zoneActive       : '',
         tableActivate   : 0,
         orderActivate   : 0,
+        tableIsActive   : false,
         orders          : [],
         tableActivateNumber : 0,
         showDiscount        : false,
@@ -33,6 +34,7 @@ const store = createStore({
             state.zoneActive       = '',
             //state.tableActivate   = 0;
             state.orderActivate   = 0;
+            state.tableIsActive   = false,
             state.tableActivateNumber = 0;
             state.showDiscount        = false;
             state.cart1           = {};

@@ -4,8 +4,8 @@
         <div class="clear-both"></div>
     </ul>
     <div v-for="(data_table, i ) in $store.state.tables" :key="i" :id="i" :class="i" class="hidden zones" >
-        <a  v-for="(table, i ) in data_table['tables']" :key="i" :class="table.status == 1 ?'open':''"  :id="'table_'+table.id"   @click = "selectTable(table)" class="float-left w-12 h-12 mb-2 ml-2 mr-2 text-3xl text-center text-white bg-green-500 rounded-md lg:mt-4 lg:w-20 lg:h-20 hover:bg-green-400 tables">
-            <div class="border-b-4 border-green-400 border-green rounded-b-md"  >{{table.number}}</div>
+        <a  v-for="(table, i ) in data_table['tables']" :key="i" :class="table.status == 1 ?'open':''"  :id="'table_'+table.id"   @click = "selectTable(table)" class="float-left w-12 h-12 mb-2 ml-2 mr-2 text-3xl text-center text-white bg-green-500 rounded-full lg:mt-4 lg:w-20 lg:h-20 hover:bg-green-600 tables cursor-pointer relative">
+            <p>{{table.number}}</p>
         </a>
     </div>
     <div class="clear-both"></div>
@@ -49,6 +49,7 @@ export default {
                             pusher.subscribe('public-table-'+tableFor[j]['id'])
                             .bind('table-'+tableFor[j]['id'], function(data) {
                                 document.getElementById("table_"+tableFor[j].id).classList.add("open");
+                                store.state.tableIsActive = tableFor[j].status;
                                 if(tableFor[j].id == store.state.tableActivate)
                                 {
                                     store.dispatch('getOrder');
@@ -144,6 +145,8 @@ export default {
                 document.getElementsByClassName("tables")[i].classList.remove("selectTable")
             }
 
+            store.state.tableIsActive = table.status;
+
             document.getElementById("table_"+table.id).classList.add("selectTable");
 
             store.dispatch('setActive', table);
@@ -166,7 +169,19 @@ export default {
                     document.getElementsByClassName("tables")[i].classList.remove("selectTable");
                 }
                 document.getElementById("table_"+localStorage.getItem("table")).classList.add("selectTable");
+                for(let i = 0 ; i < Object.keys(store.state.tables).length; i++){
+                    for(let j = 0; j < store.state.tables[Object.keys(store.state.tables)[i]]['tables'].length; j++)
+                    {
+                        if(store.state.tableActivate  == store.state.tables[Object.keys(store.state.tables)[i]]['tables'][j].id)
+                        {
+                            store.state.tableIsActive = store.state.tables[Object.keys(store.state.tables)[i]]['tables'][j].status;
+                        }
+                    }
+                }
+
             }
+
+            
 
 
         });
@@ -213,7 +228,7 @@ export default {
 
 .openTables{
 
-    background-color:#ff7979;
+    background-color:#e74c3c;
     color:whitesmoke;
     padding:2px 5px;
     border-radius: 2px;

@@ -23,9 +23,19 @@ const tableSelect = ref(null)
 export default{
     data()
     {
+
+        
         const store = useStore();
         onMounted(()=>{
             getTables();
+
+            let heigth = window.screen.height;
+            setTimeout(() => {
+                for(let i = 0; i<document.getElementsByClassName("bodyApp").length; i++)
+                {
+                    document.getElementsByClassName("bodyApp")[i].style.minHeight = (heigth - 175)+"px";
+                }
+            }, 1);
         });
 
         onUpdated(()=>{
@@ -111,7 +121,7 @@ export default{
                 icon: 'error',
                 title: 'Oops...',
                 text: 'No puede eliminar una sala con mesas',
-                confirmButtonColor: '#27ae60',
+                confirmButtonColor: '#111827',
                 });
             });
         }
@@ -258,15 +268,15 @@ export default{
     <AppLayout title="Dashboard">
        <!---
         <template #header>
-            <h2 class="text-xl font-semibold leading-tight text-gray-800">
+            <h2 class="text-xl font-semibold leading-tight text-whte">
                 Dashboard
             </h2>
         </template>
         -->
 
-        <div class="py-12">
+        <div class="py-12 bodyApp">
             <div class="mx-auto max-w-7xl sm:px-6 lg:px-8">
-                <div class="overflow-hidden bg-white shadow-xl">
+                <div class="overflow-hidden shadow-xl">
                     <ul class="relative pt-3 pl-3 mb-3 bg-gray-800 lg:mb-0 rooms">
                         <li  @click="zone(i)" :class="i" class="float-left p-3 py-3 mr-2 text-white bg-gray-600 rounded-t-sm cursor-pointer space hover:bg-gray-500"  v-for="(table, i ) in $store.state.tables" :key="i">{{ i }}</li>
 
@@ -276,7 +286,7 @@ export default{
                             </svg>
                         </button>
 
-                        <button @click="updateRoom" class="float-right p-2 mr-4 text-gray-800 bg-yellow-400 rounded-sm hover:bg-yellow-300">
+                        <button @click="updateRoom" class="float-right p-2 mr-4 text-whte bg-yellow-400 rounded-sm hover:bg-yellow-300">
                             <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-4 h-4">
                             <path stroke-linecap="round" stroke-linejoin="round" d="M16.862 4.487l1.687-1.688a1.875 1.875 0 112.652 2.652L10.582 16.07a4.5 4.5 0 01-1.897 1.13L6 18l.8-2.685a4.5 4.5 0 011.13-1.897l8.932-8.931zm0 0L19.5 7.125M18 14v4.75A2.25 2.25 0 0115.75 21H5.25A2.25 2.25 0 013 18.75V8.25A2.25 2.25 0 015.25 6H10" />
                             </svg>

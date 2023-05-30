@@ -11,10 +11,10 @@
         </div>
     </div>
     <div class="grid grid-cols-12 lg:grid-cols-7">
-        <div  class="col-span-2 lg:col-span-3 pt-2 lg:pt-0" >
+        <div  class="col-span-2 lg:col-span-3 pt-2 lg:pt-0 bg-izquierdo" >
             <tables></tables>
         </div>
-        <div class="col-span-10 lg:col-span-4 pr-2 pt-2 lg:pr-0 lg:pt-0">
+        <div class="col-span-10 lg:col-span-4 pr-2 pt-2 lg:pr-0 lg:pt-0 bg-derecho">
             <form-table></form-table>
         </div>
     </div>

@@ -32,8 +32,7 @@ const logout = () => {
         <Head :title="title" />
 
         <Banner />
-
-        <div class="min-h-screen bg-gray-100">
+        <div class="bg-gray-100">
             <nav class="bg-white border-b border-gray-100">
                 <!-- Primary Navigation Menu -->
                 <div class="px-4 mx-auto max-w-7xl sm:px-6 lg:px-8">
@@ -225,7 +224,7 @@ const logout = () => {
                             </div>
 
                             <div>
-                                <div class="text-base font-medium text-gray-800">
+                                <div class="text-base font-medium text-whte">
                                     {{ $page.props.auth.user.name }}
                                 </div>
                                 <div class="text-sm font-medium text-gray-500">

@@ -27,7 +27,7 @@
             <div class="p-4 ">
                 <button @click = "deleteTable" class="float-right  p-2 text-white bg-red-400 rounded-sm hover:bg-red-500 ">Eliminar</button>
                 <button @click = "updateTable" class="float-right  p-2 mr-4 text-white bg-green-400 rounded-sm hover:bg-green-500 ">Confirmar</button>
-                <button @click = "ChangeStateModalCloseButton" class="float-right p-2 mr-4 text-gray-800 hover:text-white bg-gray-300 rounded-sm hover:bg-gray-400">Cerrar</button>
+                <button @click = "ChangeStateModalCloseButton" class="float-right p-2 mr-4 text-whte hover:text-white bg-gray-300 rounded-sm hover:bg-gray-400">Cerrar</button>
                 <div class="clear-both"></div>
             </div>
 
@@ -161,6 +161,6 @@ export default {
 
 <style>
 .pay{
-    background-color:#2ecc71;
+    background-color:#7bed9f;
 }
 </style>

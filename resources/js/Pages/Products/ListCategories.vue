@@ -68,17 +68,17 @@
     </script>
 <style scoped>
 .active{
-    background-color: #2ecc71 !important;
+    background-color: #7bed9f !important;
 }
 .active:hover{
-    background-color: #27ae60 !important;
+    background-color: #111827 !important;
 }
 
 .childActive{
-    color: #2ecc71 !important;
+    color: #7bed9f !important;
 }
 .childActive:hover{
-    color: #27ae60 !important;
+    color: #111827 !important;
 }
 </style>
 

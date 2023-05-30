@@ -3,14 +3,14 @@
 
         <!----
         <template #header>
-            <h2 class="text-xl font-semibold leading-tight text-gray-800">
+            <h2 class="text-xl font-semibold leading-tight text-whte">
                 Dashboard
             </h2>
         </template>
         ----->
-        <div class="py-12">
+        <div class="py-12 bodyApp">
             <div class="mx-auto max-w-7xl sm:px-6 lg:px-8">
-                <div class="overflow-hidden bg-white shadow-xl">
+                <div class="overflow-hidden shadow-xl">
                     <Welcome />
                 </div>
             </div>
@@ -24,23 +24,34 @@ import AppLayout from '@/Layouts/AppLayout.vue';
 import Welcome from '@/Components/Welcome.vue';
 import AddProduct from '@/Custom/Mobile/AddProduct.vue';
 import EventBus from '../EventBus.js';
-import { ref,onMounted, onUpdated } from 'vue';
+import { ref,onMounted, onUpdated, onUnmounted } from 'vue';
 
 const openSwitch = ref(false);
 export default{
     setup(){
 
         EventBus.on("addProductMobile",()=>{
-            openSwitch.value = !openSwitch.value;
+            openSwitch.value = true ;
         })
 
         const closeAddProductMobile = () => {
             openSwitch.value = !openSwitch.value;
         }
 
+        onUpdated(()=>{
+            let heigth = window.screen.height;
+            setTimeout(() => {
+                for(let i = 0; i<document.getElementsByClassName("bodyApp").length; i++)
+                {
+                    document.getElementsByClassName("bodyApp")[i].style.minHeight = (heigth - 175)+"px";
+                }
+            }, 1);
+        })
+
         return{
             openSwitch,closeAddProductMobile
         }
+        
     },
     components:{
         AppLayout,
@@ -50,5 +61,3 @@ export default{
     }
 }
 </script>
-
-        AddProduct

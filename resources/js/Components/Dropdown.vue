@@ -72,7 +72,7 @@ const alignmentClasses = computed(() => {
                 style="display: none;"
                 @click="open = false"
             >
-                <div class="p-0 bg-white border-t border-b border-l border-r border-gray-300 border-orange-400 rounded-sm ring-transparent ring-1 ring-opacity-5" :class="contentClasses">
+                <div class="p-0 bg-white border-t border-b border-l border-r border-gray-300 rounded-sm ring-transparent ring-1 ring-opacity-5" :class="contentClasses">
                     <slot name="content" />
                 </div>
             </div>

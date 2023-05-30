@@ -7,8 +7,8 @@
         <div class="p-3 bg-gray-700 text-white font-bold shadow">CATEGORÍAS</div>
 
         <div v-for="(categoryf,i) in categories" :key = "i">
-            <span class="pl-2 py-2 block text-sm rowFather" @click="getProduct(categoryf.key)" :id="categoryf.key">{{ categoryf.label }}</span>
-            <div class="pl-4 py-2 text-sm rowSon" @click="getProduct(categorys.key)" :id="categorys.key" v-for="(categorys,i) in categoryf.children" :key = "i">
+            <span class="pl-2 py-2 block text-sm rowFather cursor-pointer" @click="getProduct(categoryf.key)" :id="'category-'+categoryf.key">{{ categoryf.label }}</span>
+            <div class="pl-4 py-2 text-sm rowSon cursor-pointer" @click="getProduct(categorys.key)" :id="categorys.key" v-for="(categorys,i) in categoryf.children" :key = "i">
                 {{ categorys.label }}
             </div>
         </div>
@@ -17,7 +17,7 @@
 
         <ul>
             <li v-for="(product, i) in products" :key ="i">
-                <div class="grid grid-cols-12 " @click="addProduct(product)" >
+                <div class="grid grid-cols-12 cursor-pointer" @click="addProduct(product)" >
                     <div  class="col-span-8 p-2">{{ product.name }}</div>
                     <div  class="col-span-4 text-right p-2">${{ product.price }}</div>
                 </div>
@@ -67,15 +67,20 @@ export default {
         }
 
         const getProduct = async(id) =>{
+
+            console.log(id);
+
             for(let i = 0; i<document.getElementsByClassName("rowFather").length; i++)
             {
                 document.getElementsByClassName("rowFather")[i].classList.remove("active");
             }
+
             for(let i = 0; i<document.getElementsByClassName("rowSon").length; i++)
             {
                 document.getElementsByClassName("rowSon")[i].classList.remove("active");
             }
-            document.getElementById(id).classList.add("active");
+
+            document.getElementById("category-"+id).classList.add("active");
 
             await axios.post('/get-products/'+id)
             .then(response=>

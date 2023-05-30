@@ -44,3 +44,8 @@ createInertiaApp({
         color: '#4B5563',
     },
 });
+
+document.addEventListener("DOMContentLoaded", () => {
+
+    
+});

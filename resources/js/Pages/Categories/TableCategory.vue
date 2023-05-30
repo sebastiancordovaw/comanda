@@ -2,7 +2,7 @@
     <div class="p-4 text-lg text-white bg-gray-800">
         <strong class="float-left">CATEGORÍAS</strong>
 
-        <button :disabled="(categoryActive)?false:true" @click="removeCategory" class="float-right p-2 mr-4 text-white bg-red-500 rounded-sm hover:text-gray-800 hover:bg-red-400">
+        <button :disabled="(categoryActive)?false:true" @click="removeCategory" class="float-right p-2 mr-4 text-white bg-red-500 rounded-sm hover:text-whte hover:bg-red-400">
             <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-3 h-3">
             <path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12" />
             </svg>
@@ -16,7 +16,7 @@
 
         </button>
 
-        <button @click="addCategory" class="float-right p-2 mr-3 text-gray-800 bg-gray-300 rounded-sm hover:text-white hover:bg-gray-400">
+        <button @click="addCategory" class="float-right p-2 mr-3 text-whte bg-gray-300 rounded-sm hover:text-white hover:bg-gray-400">
             <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-3 h-3">
             <path stroke-linecap="round" stroke-linejoin="round" d="M12 4.5v15m7.5-7.5h-15" />
             </svg>
@@ -184,8 +184,8 @@ export default {
                         text: 'Esta accion no se podra revertir!',
                         icon: 'warning',
                         showCancelButton: true,
-                        confirmButtonColor: '#27ae60',
-                        cancelButtonColor: '#d33',
+                        confirmButtonColor: '#111827',
+                        cancelButtonColor: '#06B6D4',
                         confirmButtonText: 'Si, Eliminar'
                         }).then(async(result) =>
                         {
@@ -217,7 +217,7 @@ export default {
                                         icon: 'error',
                                         title: 'Oops...',
                                         text: error.response.data.error,
-                                        confirmButtonColor: '#27ae60',
+                                        confirmButtonColor: '#111827',
                                         });
                                     }
                                 })

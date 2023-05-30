@@ -23,8 +23,8 @@
                  </li>
             </ul>
             <div class="p-4 ">
-                <button @click = "addTable" class="float-right p-2 text-white bg-green-400 rounded-sm hover:bg-green-500">Confirmar</button>
-                <button @click = "ChangeStateModalCloseButton" class="float-right p-2 mr-4 text-gray-800 hover:text-white bg-gray-300 rounded-sm hover:bg-gray-400">Cerrar</button>
+                <button @click = "addTable" class="float-right p-2 text-white bg-gray-800 rounded-sm hover:bg-gray-900">Confirmar</button>
+                <button @click = "ChangeStateModalCloseButton" class="float-right p-2 mr-4 text-white bg-cyan-300 rounded-sm hover:bg-cyan-400">Cerrar</button>
                 <div class="clear-both"></div>
             </div>
 
@@ -118,6 +118,6 @@ export default {
 
 <style>
 .pay{
-    background-color:#2ecc71;
+    background-color:#7bed9f;
 }
 </style>
