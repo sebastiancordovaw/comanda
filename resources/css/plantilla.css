@@ -26,7 +26,7 @@
   .bg-derecho::after 
   {
     content: ""; 
-    opacity: 0.8;
+    opacity: 0.9;
     background-color: #f8f7fc;
     top: 0; 
     left: 0; 

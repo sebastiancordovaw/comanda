@@ -97,7 +97,10 @@ class ProductController extends Controller
             return  $this->product->getProducts($id);
         }
 
-        return Product::select('id','name','price')->where('name', 'like', '%'.$resource->search.'%')->get();
+        return Product::select('id','name','price')
+        ->where('name', 'like', '%'.$resource->search.'%')
+        ->where('status', '=', 1)
+        ->get();
     }
 
     public function getProductsCategory($id)

@@ -5,13 +5,13 @@
             <div class="mx-auto max-w-7xl sm:px-6 lg:px-8">
                 <div class="overflow-hidden shadow-xl">
                     <div class="grid grid-cols-12 lg:grid-cols-12">
-                        <div  class="pt-2 lg:col-span-2 lg:pt-0" >
+                        <div  class="pt-2 lg:col-span-2 lg:pt-0 bg-derecho" >
                             <list-categories></list-categories>
                         </div>
-                        <div  class="pt-2 lg:col-span-7 lg:pt-0" >
+                        <div  class="pt-2 lg:col-span-7 lg:pt-0 bg-izquierdo" >
                             <table-products></table-products>
                         </div>
-                        <div  class="pt-2 lg:col-span-3 lg:pt-0" >
+                        <div  class="pt-2 lg:col-span-3 lg:pt-0 bg-derecho" >
                             <form-product></form-product>
                             <form-new-product></form-new-product>
                         </div>

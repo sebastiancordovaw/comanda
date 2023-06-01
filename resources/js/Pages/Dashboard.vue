@@ -38,7 +38,8 @@ export default{
             openSwitch.value = !openSwitch.value;
         }
 
-        onUpdated(()=>{
+        onMounted(()=>{
+            
             let heigth = window.screen.height;
             setTimeout(() => {
                 for(let i = 0; i<document.getElementsByClassName("bodyApp").length; i++)

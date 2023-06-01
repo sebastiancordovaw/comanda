@@ -1,11 +1,11 @@
 
 <template>
     <div v-if="viewUpdateProduct">
-        <div class="p-4 text-lg text-white bg-red-500">
+        <div class="p-4 text-lg text-white bg-gray-800">
             <strong class="float-left">{{ name }}</strong>
             <div class="clear-both"></div>
         </div>
-
+        <div style="min-height: 60vh;">
         <div class="grid grid-cols-12 p-4 pb-4 mt-2 gap-y-2">
 
             <ul v-if="errores!=''"  class="col-span-12 p-4 text-white bg-red-400 rounded-sm ">
@@ -70,6 +70,7 @@
         <div class="pb-4 pl-4 mt-2 mb-2">
             <button @click = "save" class="p-2 text-white bg-green-400 rounded-sm hover:bg-green-500">Guardar</button>
             <div class="clear-both"></div>
+        </div>
         </div>
     </div>
     </template>

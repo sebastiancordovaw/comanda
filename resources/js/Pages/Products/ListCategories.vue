@@ -69,9 +69,11 @@
 <style scoped>
 .active{
     background-color: #7bed9f !important;
+    color: #111827;
 }
 .active:hover{
     background-color: #111827 !important;
+    color: white;
 }
 
 .childActive{

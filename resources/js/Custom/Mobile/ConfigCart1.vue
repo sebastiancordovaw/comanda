@@ -52,7 +52,7 @@ export default {
 
         onUpdated(()=>{
             
-            if(store.state.cart1[store.state.tableActivate][props.product.id])
+            if(store.state.cart1[store.state.tableActivate] && store.state.cart1[store.state.tableActivate][props.product.id])
             {
                 count.value = store.state.cart1[store.state.tableActivate][props.product.id].count;
                 comment.value = store.state.cart1[store.state.tableActivate][props.product.id].note;

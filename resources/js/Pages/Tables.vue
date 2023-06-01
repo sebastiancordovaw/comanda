@@ -247,12 +247,19 @@ export default{
     color: #2C3E50;
     font-weight: bold;
 }
+ 
 
 .tables>div{
     width: 100%;
     height: 100%;
     padding: 19px 0px 0px 0px;
     cursor:pointer;
+}
+
+.tables p{
+    text-align: center;
+    position: absolute;
+    top: 50%;
 }
 
 @media (max-width: 1023px) {
@@ -286,7 +293,7 @@ export default{
                             </svg>
                         </button>
 
-                        <button @click="updateRoom" class="float-right p-2 mr-4 text-whte bg-yellow-400 rounded-sm hover:bg-yellow-300">
+                        <button @click="updateRoom" class="float-right p-2 mr-4 text-white bg-gray-400 rounded-sm hover:bg-gray-300">
                             <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-4 h-4">
                             <path stroke-linecap="round" stroke-linejoin="round" d="M16.862 4.487l1.687-1.688a1.875 1.875 0 112.652 2.652L10.582 16.07a4.5 4.5 0 01-1.897 1.13L6 18l.8-2.685a4.5 4.5 0 011.13-1.897l8.932-8.931zm0 0L19.5 7.125M18 14v4.75A2.25 2.25 0 0115.75 21H5.25A2.25 2.25 0 013 18.75V8.25A2.25 2.25 0 015.25 6H10" />
                             </svg>
@@ -299,13 +306,14 @@ export default{
                         </button>
                         <div class="clear-both"></div>
                     </ul>
-                    <div v-for="(data_table, i ) in $store.state.tables" :key="i" :id="i" :class="i" class="hidden zones" >
-                        <a  v-for="(table, j ) in data_table['tables']" :key="j" :id="'table_'+table.id"  class="float-left w-12 h-12 mb-2 ml-2 mr-2 text-3xl text-center text-white bg-gray-500 rounded-md lg:mt-4 lg:w-20 lg:h-20 hover:bg-gray-400 tables">
-                            <div @click="updateTable(table,i)" class="border-b-4 border-gray-400 border-solid rounded-b-md"  >{{table.number}}</div>
+                    <div v-for="(data_table, i ) in $store.state.tables" :key="i" :id="i" :class="i" class="hidden zones bg-izquierdo" >
+                        <a @click="updateTable(table,i)"   v-for="(table, j ) in data_table['tables']" :key="j" :id="'table_'+table.id"  class="cursor-pointer relative float-left w-12 h-12 mb-2 ml-2 mr-2 text-3xl text-center text-white bg-cyan-500 rounded-full lg:mt-4 lg:w-20 lg:h-20 hover:bg-cyan-400 tables">
+                           <p>{{table.number}}</p>
                         </a>
-                        <a @click="addTable(i)" class="float-left w-12 h-12 mb-2 ml-2 mr-2 text-3xl text-center text-white bg-gray-500 rounded-md lg:mt-4 lg:w-20 lg:h-20 hover:bg-gray-400 tables">
-                            <div class="text-4xl border-b-4 border-gray-400 border-solid rounded-b-md" >+</div>
+                        <a @click="addTable(i)" class="cursor-pointer float-left w-12 h-12 mb-2 ml-2 mr-2 text-3xl text-center text-white bg-green-500 relative rounded-full lg:mt-4 lg:w-20 lg:h-20 hover:bg-green-400 tables">
+                            <p>+</p>
                         </a>
+                        <div class=" clear-both"></div>
                     </div>
                     <modal-add-table :show = showAddTable @show="closeAddTableModal" @close="closeTableModal" :room = "tabSelect" :lastTable="lastTable"></modal-add-table>
                     <modal-update-table :show = showUpdateTable @show="closeUpdateTableModal" @close="closeUpdateTableModal" :room="tabSelect" :table="tableSelect"></modal-update-table>

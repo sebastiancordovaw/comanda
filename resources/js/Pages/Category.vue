@@ -4,7 +4,7 @@
             <div class="mx-auto max-w-7xl sm:px-6 lg:px-8">
                 <div class="overflow-hidden shadow-xl">
                     <div class="grid grid-cols-12 lg:grid-cols-12">
-                        <div  class="col-span-2 pt-2 lg:col-span-7 lg:pt-0" >
+                        <div  class="col-span-2 pt-2 lg:col-span-7 lg:pt-0 bg-izquierdo" >
                             <table-category ></table-category>
                         </div>
                         <div class="col-span-10 lg:col-span-5" >

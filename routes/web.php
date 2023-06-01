@@ -8,6 +8,7 @@ use App\Http\Controllers\OrderController;
 use App\Http\Controllers\TableController;
 use App\Http\Controllers\ProductController;
 use App\Http\Controllers\CategoryController;
+use Laravel\Fortify\Http\Controllers\RegisteredUserController;
 
 /*
 |--------------------------------------------------------------------------
@@ -24,15 +25,24 @@ Route::get('/', function () {
     return Redirect::route('login');
 });
 
+Route::get('/register', function () {
+    return Redirect::route('login');
+});
+
 Route::middleware([
     'auth:sanctum',
     config('jetstream.auth_session'),
     'verified',
 ])->group(function () {
+
+    Route::get('/newuser', function () {return Inertia::render('Auth/Register');})->name('register');
+    Route::post('/newuser', [RegisteredUserController::class,'store']);
+
     Route::get('/dashboard', function () {return Inertia::render('Dashboard');})->name('dashboard');
     Route::get('/tables', function () {return Inertia::render('Tables');})->name('tables');
     Route::get('/products', function () {return Inertia::render('Product');})->name('product');
     Route::get('/category', function () {return Inertia::render('Category');})->name('category');
+
 
 
     Route::post('/get-products', [ProductController::class,'getProducts'])->name('get-products');

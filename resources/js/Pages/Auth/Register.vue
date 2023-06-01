@@ -7,7 +7,9 @@ import InputError from '@/Components/InputError.vue';
 import InputLabel from '@/Components/InputLabel.vue';
 import PrimaryButton from '@/Components/PrimaryButton.vue';
 import TextInput from '@/Components/TextInput.vue';
+import {ref} from 'vue';
 
+const create = ref(false);
 const form = useForm({
     name: '',
     email: '',
@@ -18,7 +20,10 @@ const form = useForm({
 
 const submit = () => {
     form.post(route('register'), {
-        onFinish: () => form.reset('password', 'password_confirmation'),
+        onFinish: () => {
+            form.reset('password', 'password_confirmation')
+            create.value = true;
+        },
     });
 };
 </script>
@@ -30,9 +35,10 @@ const submit = () => {
         <template #logo>
             <AuthenticationCardLogo />
         </template>
-
+       
         <form @submit.prevent="submit">
-            <div>
+            <div> 
+                <p v-if="create" class="text-green-500">Usuario creado correctamente</p>
                 <InputLabel for="name" value="Name" />
                 <TextInput
                     id="name"
@@ -99,8 +105,8 @@ const submit = () => {
             </div>
 
             <div class="flex items-center justify-end mt-4">
-                <Link :href="route('login')" class="underline text-sm text-gray-600 hover:text-gray-900 rounded-md focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500">
-                    Already registered?
+                <Link :href="route('dashboard')" class="underline text-sm text-gray-600 hover:text-gray-900 rounded-md focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500">
+                    Dashboard
                 </Link>
 
                 <PrimaryButton class="ml-4" :class="{ 'opacity-25': form.processing }" :disabled="form.processing">

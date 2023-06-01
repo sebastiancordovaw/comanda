@@ -16,7 +16,7 @@
 
         </button>
 
-        <button @click="addProduct" class="float-right p-2 mr-3 text-whte bg-gray-300 rounded-sm hover:text-white hover:bg-gray-400">
+        <button @click="addProduct" class="float-right p-2 mr-3 text-gray-900 bg-gray-300 rounded-sm hover:text-white hover:bg-gray-400">
             <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-3 h-3">
             <path stroke-linecap="round" stroke-linejoin="round" d="M12 4.5v15m7.5-7.5h-15" />
             </svg>
@@ -26,7 +26,7 @@
         <div class="clear-both"></div>
     </div>
 
-    <div class="relative min-h-full overflow-x-hidden shadow-md sm:rounded-lg">
+    <div class="relative overflow-x-hidden" style="min-height: 60vh;">
         <table class="w-full min-h-full overflow-x-hidden text-sm text-left text-gray-500 dark:text-gray-400" v-if="!viewSort">
             <thead class="overflow-x-hidden text-xs text-gray-700 uppercase bg-gray-50 dark:bg-gray-700 dark:text-gray-400 ">
                 <tr>
@@ -46,17 +46,17 @@
                             </template>
 
                             <template #content>
-                                <a  class="text-left hover:bg-yellow-300">
-                                    <div class="grid grid-cols-12 px-2 py-2 hover:bg-orange-200" @click.prevent = "filterQr('all')">
+                                <a  class="text-left">
+                                    <div class="grid grid-cols-12 px-2 py-2 hover:bg-gray-800 hover:text-white" @click.prevent = "filterQr('all')">
                                         <div class="col-span-9 cursor-pointer">Todos</div>
                                     </div>
-                                    <div class="grid grid-cols-12 px-2 py-2 hover:bg-orange-200" @click.prevent = "filterQr('category')">
+                                    <div class="grid grid-cols-12 px-2 py-2 hover:bg-gray-800 hover:text-white" @click.prevent = "filterQr('category')">
                                         <div class="col-span-9 cursor-pointer">Según Categoría</div>
                                     </div>
-                                    <div class="grid grid-cols-12 px-2 py-2 hover:bg-orange-200" @click.prevent = "filterQr('yes')">
+                                    <div class="grid grid-cols-12 px-2 py-2 hover:bg-gray-800 hover:text-white" @click.prevent = "filterQr('yes')">
                                         <div class="col-span-9 cursor-pointer">Si</div>
                                     </div>
-                                    <div class="grid grid-cols-12 px-2 py-2 hover:bg-orange-200" @click.prevent = "filterQr('not')">
+                                    <div class="grid grid-cols-12 px-2 py-2 hover:bg-gray-800 hover:text-white" @click.prevent = "filterQr('not')">
                                         <div class="col-span-9 cursor-pointer">No</div>
                                     </div>
                                 </a>
@@ -75,13 +75,13 @@
 
                             <template #content>
                                 <a  class="text-left hover:bg-yellow-300">
-                                    <div class="grid grid-cols-12 px-2 py-2 hover:bg-orange-200" @click.prevent = "filterStatus('all')">
+                                    <div class="grid grid-cols-12 px-2 py-2 hover:bg-gray-800 hover:text-white" @click.prevent = "filterStatus('all')">
                                         <div class="col-span-9 cursor-pointer">Todos</div>
                                     </div>
-                                    <div class="grid grid-cols-12 px-2 py-2 hover:bg-orange-200" @click.prevent = "filterStatus(1)">
+                                    <div class="grid grid-cols-12 px-2 py-2 hover:bg-gray-800 hover:text-white" @click.prevent = "filterStatus(1)">
                                         <div class="col-span-9 cursor-pointer">Activo</div>
                                     </div>
-                                    <div class="grid grid-cols-12 px-2 py-2 hover:bg-orange-200" @click.prevent = "filterStatus(0)">
+                                    <div class="grid grid-cols-12 px-2 py-2 hover:bg-gray-800 hover:text-white" @click.prevent = "filterStatus(0)">
                                         <div class="col-span-9 cursor-pointer">Inactivo</div>
                                     </div>
                                 </a>
@@ -95,7 +95,7 @@
                     <template v-for="(product, i ) in products" :key ="i" >
                         <template v-if="(filterStatusActive=='all')?true:(filterStatusActive==product.status)">
                         <template v-if="(filterQrActive=='all')?true:(filterQrActive==product.qr)">
-                        <tr @click="edit(product)" :id="product.id" class="bg-white border-b cursor-pointer hover:shadow-lg row dark:bg-gray-800 dark:border-gray-700 hover:bg-yellow-200 dark:hover:bg-gray-600">
+                        <tr @click="edit(product)" :id="product.id" class="bg-white border-b cursor-pointer hover:shadow-lg row dark:bg-gray-800 dark:border-gray-700 hover:bg-gray-200 dark:hover:bg-gray-600">
                             <th scope="row" class="px-6 py-4 font-medium text-gray-900 whitespace-nowrap dark:text-white">
                                 {{ product.name  }}
                             </th>
@@ -122,7 +122,7 @@
         </table>
 
         <draggable v-model="productsSort" v-if="viewSort" @change="log">
-            <div v-for="(products, i ) in productsSort" :key ="i" class="p-4 text-sm bg-white border-b cursor-move row dark:bg-gray-800 dark:border-gray-700 hover:bg-yellow-200 dark:hover:bg-gray-600">
+            <div v-for="(products, i ) in productsSort" :key ="i" class="p-4 text-sm bg-white border-b cursor-move row dark:bg-gray-800 dark:border-gray-700 hover:bg-gray-200 dark:hover:bg-gray-600">
                 <div class="grid grid-cols-12 lg:grid-cols-12">
                     <div  class="col-span-8" >
                         {{ products.name  }}
@@ -200,7 +200,7 @@ export default {
                 {
                     for(let i = 0; i < document.getElementsByClassName("row").length; i++)
                     {
-                        document.getElementsByClassName("row")[i].classList.remove("bg-yellow-200")
+                        document.getElementsByClassName("row")[i].classList.remove("bg-cyan-200")
                     }
                 }
             });
@@ -211,9 +211,9 @@ export default {
             productActivate.value = productoEntry
             for(let i = 0; i < document.getElementsByClassName("row").length; i++)
             {
-                document.getElementsByClassName("row")[i].classList.remove("bg-yellow-200")
+                document.getElementsByClassName("row")[i].classList.remove("bg-cyan-200")
             }
-            document.getElementById(productoEntry).classList.add("bg-yellow-200");
+            document.getElementById(productoEntry).classList.add("bg-cyan-200");
         }
 
         const addProduct = () =>{

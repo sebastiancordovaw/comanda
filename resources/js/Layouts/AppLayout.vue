@@ -41,7 +41,7 @@ const logout = () => {
                             <!-- Logo -->
                             <div class="flex items-center shrink-0">
                                 <Link :href="route('dashboard')">
-                                    <ApplicationMark class="block w-auto h-9" />
+                                    <ApplicationMark class="block w-auto h-14" />
                                 </Link>
                             </div>
 

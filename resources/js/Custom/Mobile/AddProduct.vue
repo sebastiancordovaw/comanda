@@ -1,6 +1,6 @@
 <template>
-<div class="p-3 col-span-7 bg-gray-700">
-    <input placeholder="Buscar Producto..." v-model="searchInput" type="text"  name="" id="" class="w-full border-t-0 border-b border-l-0 border-r-0 bg-transparent text-white border-gray-400 focus:ring-transparent focus:border-white">
+<div class="p-3 col-span-7 bg-gray-800">
+    <input placeholder="Buscar Producto..." v-model="searchInput" @keyup="searchProduct()" @keyup.enter="searchProduct()"  type="text"  name="" id="" class="w-full border-t-0 border-b border-l-0 border-r-0 bg-transparent text-white border-gray-400 focus:ring-transparent focus:border-white">
 </div>
 <div class="grid grid-cols-12 " >
     <div  class="col-span-5">
@@ -18,7 +18,8 @@
         <ul>
             <li v-for="(product, i) in products" :key ="i">
                 <div class="grid grid-cols-12 cursor-pointer" @click="addProduct(product)" >
-                    <div  class="col-span-8 p-2">{{ product.name }}</div>
+                    <div  v-if="$store.state.cart1[$store.state.tableActivate] && $store.state.cart1[$store.state.tableActivate][product.id]"  class="col-span-1 p-2"><div class="rounded-full bg-red-500 text-white text-center">{{ $store.state.cart1[$store.state.tableActivate][product.id].count}}</div></div>
+                    <div  class="col-span-7 p-2">{{ product.name }}</div>
                     <div  class="col-span-4 text-right p-2">${{ product.price }}</div>
                 </div>
             </li>
@@ -39,6 +40,7 @@
 import { ref, onMounted } from 'vue'
 import EventBus from '../../EventBus';
 import configCart1 from './ConfigCart1.vue';
+import { useStore } from 'vuex';
 const categories = ref([]);
 
 const products = ref([]);
@@ -48,11 +50,51 @@ const searchInput = ref(null)
 export default {
     emits:['closeAddProductMobile'],
     setup(props,{emit}) {
-
+        const store = useStore();
         onMounted(()=>
         {
             getCategorias()
         })
+
+        const searchProduct = async() =>{
+
+            if(searchInput.value.trim().length>0)
+            {   
+               
+
+                let formData = new URLSearchParams();
+                formData.append("search", searchInput.value);
+                const AxiosConfig = {
+                    method: 'POST',
+                    url: '/get-products',
+                    data: formData,
+                    headers: {
+                        'Content-Type': 'application/x-www-form-urlencoded',
+                    }
+                };
+
+                await axios(AxiosConfig)
+                .then(response=>
+                {
+                    products.value = response.data;
+                })
+                .catch(error=>{
+                    if(error.response.status === 422)
+                    {
+                        products.value = [];
+                    }
+                    else if(error.response.status === 500){
+                        products.value = [];
+                    }
+                })
+            }
+            else{
+                products.value = [];
+                    return false;
+                
+                }
+
+        } 
 
         const closeAddProductMobile=()=>{
             emit("closeAddProductMobile");
@@ -67,8 +109,6 @@ export default {
         }
 
         const getProduct = async(id) =>{
-
-            console.log(id);
 
             for(let i = 0; i<document.getElementsByClassName("rowFather").length; i++)
             {
@@ -121,7 +161,8 @@ export default {
             configCart1ViweFunction,
             confirmConfigCart1,
             searchInput,
-            closeAddProductMobile
+            closeAddProductMobile,
+            searchProduct
         }
     },
     components:{
@@ -136,7 +177,7 @@ export default {
 box-shadow: inset 0px 4px 5px 0px rgba(0,0,0,0.75);
 }
 .active{
-    background-color: #2c3e50;
+    background-color: #374151;
     color: white;
 }
 </style>
